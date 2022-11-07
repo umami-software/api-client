@@ -1,0 +1,25 @@
+{
+  "presets": ["@babel/env", ["@babel/react", { "runtime": "automatic" }], "@babel/typescript"],
+  "plugins": [
+    "react-hot-loader/babel",
+    "@babel/transform-runtime",
+    "@babel/proposal-class-properties",
+    "@babel/proposal-object-rest-spread",
+    "@babel/proposal-optional-chaining",
+    "@babel/proposal-nullish-coalescing-operator",
+    "@babel/proposal-export-default-from"
+  ],
+  "env": {
+    "production": {
+      "presets": ["@babel/env", ["@babel/react", { "runtime": "automatic" }], "@babel/typescript"],
+      "plugins": [
+        "@babel/transform-runtime",
+        "@babel/proposal-class-properties",
+        "@babel/proposal-object-rest-spread",
+        "@babel/proposal-optional-chaining",
+        "@babel/proposal-nullish-coalescing-operator",
+        "@babel/proposal-export-default-from"
+      ]
+    }
+  }
+}
