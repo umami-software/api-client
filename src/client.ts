@@ -8,12 +8,9 @@ export class UmamiApiClient {
   baseUrl: string;
   authToken: string;
 
-  constructor(baseUrl: string, secret: string) {
+  constructor(baseUrl: string, secret: string, userId: string) {
     this.baseUrl = baseUrl;
-    this.authToken = createSecureToken(
-      { userId: '41e2b680-648e-4b09-bcd7-3e2b10c06264', isAdmin: true },
-      hash(secret),
-    );
+    this.authToken = createSecureToken({ userId, isAdmin: true }, hash(secret));
   }
 
   get(url: string, params?: object, headers?: object) {
@@ -60,7 +57,7 @@ export class UmamiApiClient {
     return await this.get(`users/${id}`);
   }
 
-  async deleteUser(id: string): Promise<ApiResponse<any>> {
+  async deleteUser(id: string): Promise<ApiResponse<UmamiApi.Empty>> {
     return await this.del(`users/${id}`);
   }
 
@@ -87,7 +84,7 @@ export class UmamiApiClient {
   }
 
   // share
-  async getShare(id: string) {
+  async getShare(id: string): Promise<ApiResponse<[UmamiApi.Share]>> {
     return await this.get(`share/${id}`);
   }
 
@@ -95,7 +92,6 @@ export class UmamiApiClient {
   async createWebsite(data: {
     name: string;
     domain: string;
-    owner: string;
     enableShareUrl: boolean;
   }): Promise<ApiResponse<UmamiApi.Website>> {
     return await this.post(`websites`, data);
@@ -112,26 +108,26 @@ export class UmamiApiClient {
       domain: string;
       shareId;
     },
-  ): Promise<ApiResponse<any>> {
+  ): Promise<ApiResponse<UmamiApi.Empty>> {
     const { shareId: share_id, ...rest } = data;
 
     return await this.post(`websites/${id}`, { share_id, ...rest });
   }
 
-  async deleteWebsite(id: string) {
+  async deleteWebsite(id: string): Promise<ApiResponse<UmamiApi.Empty>> {
     return await this.del(`websites/${id}`);
   }
 
-  async resetWebsite(id: string) {
+  async resetWebsite(id: string): Promise<ApiResponse<UmamiApi.Empty>> {
     return await this.post(`websites/${id}/reset`);
   }
 
-  async getWebsites(includeAll: boolean = false) {
+  async getWebsites(includeAll: boolean = false): Promise<ApiResponse<[UmamiApi.Website]>> {
     return await this.get(`websites`, { include_all: includeAll });
   }
 
-  async getWebsiteActive(id: string) {
-    return await this.del(`websites/${id}/active`);
+  async getWebsiteActive(id: string): Promise<ApiResponse<[UmamiApi.WebsiteActive]>> {
+    return await this.get(`websites/${id}/active`);
   }
 
   async getWebsiteEventData(
@@ -144,7 +140,7 @@ export class UmamiApiClient {
       columns: { [key: string]: 'count' | 'max' | 'min' | 'avg' | 'sum' };
       filters?: { [key: string]: any };
     },
-  ) {
+  ): Promise<ApiResponse<[UmamiApi.WebsiteMetric]>> {
     const { startAt, endAt, eventName: event_name, ...rest } = params;
 
     const start_at = startAt.getTime();
@@ -168,7 +164,7 @@ export class UmamiApiClient {
       url?: string;
       eventName?: string;
     },
-  ) {
+  ): Promise<ApiResponse<[UmamiApi.WebsiteMetric]>> {
     const { timezone: tz, eventName: event_name, startAt, endAt, ...rest } = params;
 
     const start_at = startAt.getTime();
@@ -196,7 +192,7 @@ export class UmamiApiClient {
       device?: string;
       country?: string;
     },
-  ) {
+  ): Promise<ApiResponse<[UmamiApi.WebsiteMetric]>> {
     const { startAt, endAt, ...rest } = params;
 
     const start_at = startAt.getTime();
@@ -208,9 +204,10 @@ export class UmamiApiClient {
   async getWebsitePageviews(
     id: string,
     params: {
-      type: string;
       startAt: Date;
       endAt: Date;
+      unit: string;
+      timezone: string;
       url: string;
       referrer: string;
       os: string;
@@ -218,13 +215,13 @@ export class UmamiApiClient {
       device: string;
       country: string;
     },
-  ) {
-    const { startAt, endAt, ...rest } = params;
+  ): Promise<ApiResponse<UmamiApi.WebsitePageviews>> {
+    const { startAt, endAt, timezone: tz, ...rest } = params;
 
     const start_at = startAt.getTime();
     const end_at = endAt.getTime();
 
-    return await this.get(`websites/${id}/pageviews`, { start_at, end_at, ...rest });
+    return await this.get(`websites/${id}/pageviews`, { start_at, end_at, tz, ...rest });
   }
 
   async getWebsiteStats(
@@ -240,7 +237,7 @@ export class UmamiApiClient {
       device: string;
       country: string;
     },
-  ) {
+  ): Promise<ApiResponse<UmamiApi.WebsiteStats>> {
     const { startAt, endAt, ...rest } = params;
 
     const start_at = startAt.getTime();
@@ -250,12 +247,14 @@ export class UmamiApiClient {
   }
 
   // realtime
-  async getRealtimeInit() {
+  async getRealtimeInit(): Promise<ApiResponse<UmamiApi.RealtimeInit>> {
     return await this.get(`realtime/init`);
   }
 
-  async getRealtimeUpdate(startAt) {
-    return await this.get(`realtime/update`, { start_at: startAt });
+  async getRealtimeUpdate(startAt: Date): Promise<ApiResponse<UmamiApi.RealtimeUpdate>> {
+    const start_at = startAt.getTime();
+
+    return await this.get(`realtime/update`, { start_at });
   }
 
   // auth
