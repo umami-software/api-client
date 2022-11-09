@@ -1,7 +1,7 @@
 {
   "name": "@umami/api-client",
-  "version": "0.1.0",
-  "description": "Api client for Umami Analytics",
+  "version": "0.2.0",
+  "description": "API client for Umami Analytics",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",

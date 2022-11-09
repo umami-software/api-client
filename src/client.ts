@@ -8,53 +8,53 @@ import * as UmamiApi from 'models';
 const log = debug('umami:api');
 
 export interface UmamiApiClientOptions {
-  userId: string;
-  secret: string;
-  baseUrl?: string;
+  userId?: string;
+  secret?: string;
+  apiEndpoint?: string;
 }
 
 export class UmamiApiClient {
-  baseUrl: string;
+  apiEndpoint: string;
   authToken: string;
 
   constructor(options: UmamiApiClientOptions) {
-    const { userId, secret, baseUrl = '' } = options;
+    const { userId, secret, apiEndpoint = '' } = options;
 
-    this.baseUrl = baseUrl;
+    this.apiEndpoint = apiEndpoint;
     this.authToken = createSecureToken({ userId, isAdmin: true }, hash(secret));
   }
 
   get(url: string, params?: object, headers?: object) {
-    log(buildUrl(`get: ${this.baseUrl}/${url}`, params));
+    log(buildUrl(`GET: ${this.apiEndpoint}/${url}`, params));
 
-    return apiRequest('get', buildUrl(`${this.baseUrl}/${url}`, params), undefined, {
+    return apiRequest('get', buildUrl(`${this.apiEndpoint}/${url}`, params), undefined, {
       ...headers,
       authorization: `Bearer ${this.authToken}`,
     });
   }
 
   del(url: string, params?: object, headers?: object) {
-    log(buildUrl(`del: ${this.baseUrl}/${url}`, params));
+    log(buildUrl(`DELETE: ${this.apiEndpoint}/${url}`, params));
 
-    return apiRequest('delete', buildUrl(`${this.baseUrl}/${url}`, params), undefined, {
+    return apiRequest('delete', buildUrl(`${this.apiEndpoint}/${url}`, params), undefined, {
       ...headers,
       authorization: `Bearer ${this.authToken}`,
     });
   }
 
   post(url: string, params?: object, headers?: object) {
-    log(`post: ${this.baseUrl}/${url}`);
+    log(`POST: ${this.apiEndpoint}/${url}`);
 
-    return apiRequest('post', `${this.baseUrl}/${url}`, JSON.stringify(params), {
+    return apiRequest('post', `${this.apiEndpoint}/${url}`, JSON.stringify(params), {
       ...headers,
       authorization: `Bearer ${this.authToken}`,
     });
   }
 
   put(url: string, params?: object, headers?: object) {
-    log(`put: ${this.baseUrl}/${url}`);
+    log(`PUT: ${this.apiEndpoint}/${url}`);
 
-    return apiRequest('put', `${this.baseUrl}/${url}`, JSON.stringify(params), {
+    return apiRequest('put', `${this.apiEndpoint}/${url}`, JSON.stringify(params), {
       ...headers,
       authorization: `Bearer ${this.authToken}`,
     });
