@@ -25,7 +25,7 @@ export class UmamiApiClient {
   }
 
   get(url: string, params?: object, headers?: object) {
-    log(buildUrl(`GET: ${this.apiEndpoint}/${url}`, params));
+    log(buildUrl(`GET ${this.apiEndpoint}/${url}`, params));
 
     return apiRequest('get', buildUrl(`${this.apiEndpoint}/${url}`, params), undefined, {
       ...headers,
@@ -34,7 +34,7 @@ export class UmamiApiClient {
   }
 
   del(url: string, params?: object, headers?: object) {
-    log(buildUrl(`DELETE: ${this.apiEndpoint}/${url}`, params));
+    log(buildUrl(`DELETE ${this.apiEndpoint}/${url}`, params));
 
     return apiRequest('delete', buildUrl(`${this.apiEndpoint}/${url}`, params), undefined, {
       ...headers,
@@ -43,7 +43,7 @@ export class UmamiApiClient {
   }
 
   post(url: string, params?: object, headers?: object) {
-    log(`POST: ${this.apiEndpoint}/${url}`);
+    log(`POST ${this.apiEndpoint}/${url}`);
 
     return apiRequest('post', `${this.apiEndpoint}/${url}`, JSON.stringify(params), {
       ...headers,
@@ -52,7 +52,7 @@ export class UmamiApiClient {
   }
 
   put(url: string, params?: object, headers?: object) {
-    log(`PUT: ${this.apiEndpoint}/${url}`);
+    log(`PUT ${this.apiEndpoint}/${url}`);
 
     return apiRequest('put', `${this.apiEndpoint}/${url}`, JSON.stringify(params), {
       ...headers,
@@ -121,12 +121,10 @@ export class UmamiApiClient {
     data: {
       name: string;
       domain: string;
-      shareId;
+      shareId: string;
     },
   ): Promise<ApiResponse<UmamiApi.Empty>> {
-    const { shareId: share_id, ...rest } = data;
-
-    return this.post(`websites/${id}`, { share_id, ...rest });
+    return this.post(`websites/${id}`, data);
   }
 
   async deleteWebsite(id: string): Promise<ApiResponse<UmamiApi.Empty>> {
