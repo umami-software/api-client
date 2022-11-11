@@ -15,13 +15,22 @@ export interface UmamiApiClientOptions {
 
 export class UmamiApiClient {
   apiEndpoint: string;
-  authToken: string;
+  secret: string;
+  authToken?: string;
 
   constructor(options: UmamiApiClientOptions) {
     const { userId, secret, apiEndpoint = '' } = options;
 
     this.apiEndpoint = apiEndpoint;
-    this.authToken = createSecureToken({ userId }, hash(secret));
+    this.secret = hash(secret);
+
+    if (userId) {
+      this.setAuthToken(userId);
+    }
+  }
+
+  setAuthToken(userId?: string) {
+    this.authToken = createSecureToken({ userId }, this.secret);
   }
 
   get(url: string, params?: object, headers?: object) {
