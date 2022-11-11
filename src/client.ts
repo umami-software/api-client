@@ -68,7 +68,7 @@ export class UmamiApiClient {
     return this.post(`users`, data);
   }
 
-  async getUser(id: string): Promise<ApiResponse<[UmamiApi.User]>> {
+  async getUser(id: string): Promise<ApiResponse<UmamiApi.User>> {
     return this.get(`users/${id}`);
   }
 
@@ -94,12 +94,12 @@ export class UmamiApiClient {
     return this.post(`users/${id}/password`, { current_password, new_password });
   }
 
-  async getUsers(): Promise<ApiResponse<[UmamiApi.User]>> {
+  async getUsers(): Promise<ApiResponse<UmamiApi.User[]>> {
     return this.get(`users`);
   }
 
   // share
-  async getShare(id: string): Promise<ApiResponse<[UmamiApi.Share]>> {
+  async getShare(id: string): Promise<ApiResponse<UmamiApi.Share[]>> {
     return this.get(`share/${id}`);
   }
 
@@ -135,11 +135,11 @@ export class UmamiApiClient {
     return this.post(`websites/${id}/reset`);
   }
 
-  async getWebsites(includeAll: boolean = false): Promise<ApiResponse<[UmamiApi.Website]>> {
+  async getWebsites(includeAll: boolean = false): Promise<ApiResponse<UmamiApi.Website[]>> {
     return this.get(`websites`, { include_all: includeAll });
   }
 
-  async getWebsiteActive(id: string): Promise<ApiResponse<[UmamiApi.WebsiteActive]>> {
+  async getWebsiteActive(id: string): Promise<ApiResponse<UmamiApi.WebsiteActive[]>> {
     return this.get(`websites/${id}/active`);
   }
 
@@ -153,7 +153,7 @@ export class UmamiApiClient {
       columns: { [key: string]: 'count' | 'max' | 'min' | 'avg' | 'sum' };
       filters?: { [key: string]: any };
     },
-  ): Promise<ApiResponse<[UmamiApi.WebsiteMetric]>> {
+  ): Promise<ApiResponse<UmamiApi.WebsiteMetric[]>> {
     const { startAt, endAt, eventName: event_name, ...rest } = params;
 
     const start_at = startAt.getTime();
@@ -177,7 +177,7 @@ export class UmamiApiClient {
       url?: string;
       eventName?: string;
     },
-  ): Promise<ApiResponse<[UmamiApi.WebsiteMetric]>> {
+  ): Promise<ApiResponse<UmamiApi.WebsiteMetric[]>> {
     const { timezone: tz, eventName: event_name, startAt, endAt, ...rest } = params;
 
     const start_at = startAt.getTime();
@@ -205,7 +205,7 @@ export class UmamiApiClient {
       device?: string;
       country?: string;
     },
-  ): Promise<ApiResponse<[UmamiApi.WebsiteMetric]>> {
+  ): Promise<ApiResponse<UmamiApi.WebsiteMetric[]>> {
     const { startAt, endAt, ...rest } = params;
 
     const start_at = startAt.getTime();
