@@ -21,7 +21,7 @@ export class UmamiApiClient {
     const { userId, secret, apiEndpoint = '' } = options;
 
     this.apiEndpoint = apiEndpoint;
-    this.authToken = createSecureToken(userId, hash(secret));
+    this.authToken = createSecureToken({ userId }, hash(secret));
   }
 
   get(url: string, params?: object, headers?: object) {
