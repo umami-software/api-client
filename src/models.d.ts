@@ -8,6 +8,7 @@ export interface User {
 export interface Website {
   id: string;
   userId: string;
+  revId: number;
   name: string;
   domain: string;
   shareId: string;
@@ -27,6 +28,12 @@ export interface WebsiteActive {
 
 export interface WebsiteMetric {
   x: string;
+  y: number;
+}
+
+export interface WebsiteEventMetric {
+  x: string;
+  t: string;
   y: number;
 }
 

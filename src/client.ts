@@ -116,7 +116,6 @@ export class UmamiApiClient {
   async createWebsite(data: {
     name: string;
     domain: string;
-    enableShareUrl: boolean;
   }): Promise<ApiResponse<UmamiApi.Website>> {
     return this.post(`websites`, data);
   }
