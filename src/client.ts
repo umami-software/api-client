@@ -3,7 +3,7 @@ import { createSecureToken, hash } from 'lib/crypto';
 import { apiRequest } from 'lib/request';
 import { buildUrl } from 'lib/url';
 import { ApiResponse } from 'lib/request';
-import * as UmamiApi from 'models';
+import * as Umami from 'models';
 
 const log = debug('umami:api');
 
@@ -70,25 +70,22 @@ export class UmamiApiClient {
   }
 
   // user
-  async createUser(data: {
-    username: string;
-    password: string;
-  }): Promise<ApiResponse<UmamiApi.User>> {
+  async createUser(data: { username: string; password: string }): Promise<ApiResponse<Umami.User>> {
     return this.post(`users`, data);
   }
 
-  async getUser(id: string): Promise<ApiResponse<UmamiApi.User>> {
+  async getUser(id: string): Promise<ApiResponse<Umami.User>> {
     return this.get(`users/${id}`);
   }
 
-  async deleteUser(id: string): Promise<ApiResponse<UmamiApi.Empty>> {
+  async deleteUser(id: string): Promise<ApiResponse<Umami.Empty>> {
     return this.del(`users/${id}`);
   }
 
   async updateUser(
     id: string,
     data: { username: string; password: string },
-  ): Promise<ApiResponse<UmamiApi.User>> {
+  ): Promise<ApiResponse<Umami.User>> {
     return this.post(`users/${id}`, data);
   }
 
@@ -98,29 +95,26 @@ export class UmamiApiClient {
       currentPassword: string;
       newPassword: string;
     },
-  ): Promise<ApiResponse<UmamiApi.User>> {
+  ): Promise<ApiResponse<Umami.User>> {
     const { currentPassword: current_password, newPassword: new_password } = data;
     return this.post(`users/${id}/password`, { current_password, new_password });
   }
 
-  async getUsers(): Promise<ApiResponse<UmamiApi.User[]>> {
+  async getUsers(): Promise<ApiResponse<Umami.User[]>> {
     return this.get(`users`);
   }
 
   // share
-  async getShare(id: string): Promise<ApiResponse<UmamiApi.Share[]>> {
+  async getShare(id: string): Promise<ApiResponse<Umami.Share[]>> {
     return this.get(`share/${id}`);
   }
 
   // website
-  async createWebsite(data: {
-    name: string;
-    domain: string;
-  }): Promise<ApiResponse<UmamiApi.Website>> {
+  async createWebsite(data: { name: string; domain: string }): Promise<ApiResponse<Umami.Website>> {
     return this.post(`websites`, data);
   }
 
-  async getWebsite(id: string): Promise<ApiResponse<UmamiApi.Website>> {
+  async getWebsite(id: string): Promise<ApiResponse<Umami.Website>> {
     return this.get(`websites/${id}`);
   }
 
@@ -131,23 +125,23 @@ export class UmamiApiClient {
       domain: string;
       shareId: string;
     },
-  ): Promise<ApiResponse<UmamiApi.Empty>> {
+  ): Promise<ApiResponse<Umami.Empty>> {
     return this.post(`websites/${id}`, data);
   }
 
-  async deleteWebsite(id: string): Promise<ApiResponse<UmamiApi.Empty>> {
+  async deleteWebsite(id: string): Promise<ApiResponse<Umami.Empty>> {
     return this.del(`websites/${id}`);
   }
 
-  async resetWebsite(id: string): Promise<ApiResponse<UmamiApi.Empty>> {
+  async resetWebsite(id: string): Promise<ApiResponse<Umami.Empty>> {
     return this.post(`websites/${id}/reset`);
   }
 
-  async getWebsites(includeAll: boolean = false): Promise<ApiResponse<UmamiApi.Website[]>> {
+  async getWebsites(includeAll: boolean = false): Promise<ApiResponse<Umami.Website[]>> {
     return this.get(`websites`, { include_all: includeAll });
   }
 
-  async getWebsiteActive(id: string): Promise<ApiResponse<UmamiApi.WebsiteActive[]>> {
+  async getWebsiteActive(id: string): Promise<ApiResponse<Umami.WebsiteActive[]>> {
     return this.get(`websites/${id}/active`);
   }
 
@@ -161,7 +155,7 @@ export class UmamiApiClient {
       columns: { [key: string]: 'count' | 'max' | 'min' | 'avg' | 'sum' };
       filters?: { [key: string]: any };
     },
-  ): Promise<ApiResponse<UmamiApi.WebsiteMetric[]>> {
+  ): Promise<ApiResponse<Umami.WebsiteMetric[]>> {
     const { startAt, endAt, eventName: event_name, ...rest } = params;
 
     const start_at = startAt.getTime();
@@ -185,7 +179,7 @@ export class UmamiApiClient {
       url?: string;
       eventName?: string;
     },
-  ): Promise<ApiResponse<UmamiApi.WebsiteMetric[]>> {
+  ): Promise<ApiResponse<Umami.WebsiteMetric[]>> {
     const { timezone: tz, eventName: event_name, startAt, endAt, ...rest } = params;
 
     const start_at = startAt.getTime();
@@ -213,7 +207,7 @@ export class UmamiApiClient {
       device?: string;
       country?: string;
     },
-  ): Promise<ApiResponse<UmamiApi.WebsiteMetric[]>> {
+  ): Promise<ApiResponse<Umami.WebsiteMetric[]>> {
     const { startAt, endAt, ...rest } = params;
 
     const start_at = startAt.getTime();
@@ -236,7 +230,7 @@ export class UmamiApiClient {
       device: string;
       country: string;
     },
-  ): Promise<ApiResponse<UmamiApi.WebsitePageviews>> {
+  ): Promise<ApiResponse<Umami.WebsitePageviews>> {
     const { startAt, endAt, timezone: tz, ...rest } = params;
 
     const start_at = startAt.getTime();
@@ -258,7 +252,7 @@ export class UmamiApiClient {
       device: string;
       country: string;
     },
-  ): Promise<ApiResponse<UmamiApi.WebsiteStats>> {
+  ): Promise<ApiResponse<Umami.WebsiteStats>> {
     const { startAt, endAt, ...rest } = params;
 
     const start_at = startAt.getTime();
@@ -267,12 +261,49 @@ export class UmamiApiClient {
     return this.get(`websites/${id}/stats`, { start_at, end_at, ...rest });
   }
 
+  // Teams
+
+  async createTeam(data: { name: string; domain: string }): Promise<ApiResponse<Umami.Team>> {
+    return this.post(`teams`, data);
+  }
+
+  async getTeam(id: string): Promise<ApiResponse<Umami.Team>> {
+    return this.get(`teams/${id}`);
+  }
+
+  async getTeams(): Promise<ApiResponse<Umami.Team[]>> {
+    return this.get(`teams`);
+  }
+
+  async getTeamUsers(id: string): Promise<ApiResponse<Umami.User[]>> {
+    return this.get(`teams/${id}/users`);
+  }
+
+  async getTeamWebsites(id: string): Promise<ApiResponse<Umami.Website[]>> {
+    return this.get(`teams/${id}/websites`);
+  }
+
+  async updateTeam(
+    id: string,
+    data: {
+      name: string;
+      domain: string;
+      shareId: string;
+    },
+  ): Promise<ApiResponse<Umami.Empty>> {
+    return this.post(`teams/${id}`, data);
+  }
+
+  async deleteTeam(id: string): Promise<ApiResponse<Umami.Empty>> {
+    return this.del(`teams/${id}`);
+  }
+
   // realtime
-  async getRealtimeInit(): Promise<ApiResponse<UmamiApi.RealtimeInit>> {
+  async getRealtimeInit(): Promise<ApiResponse<Umami.RealtimeInit>> {
     return this.get(`realtime/init`);
   }
 
-  async getRealtimeUpdate(startAt: Date): Promise<ApiResponse<UmamiApi.RealtimeUpdate>> {
+  async getRealtimeUpdate(startAt: Date): Promise<ApiResponse<Umami.RealtimeUpdate>> {
     const start_at = startAt.getTime();
 
     return this.get(`realtime/update`, { start_at });

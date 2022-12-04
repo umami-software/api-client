@@ -15,6 +15,20 @@ export interface Website {
   createdAt: Date;
 }
 
+export interface Team {
+  id: string;
+  name: string;
+  createdAt: string;
+}
+
+export interface TeamUser {
+  id: string;
+  teamId: string;
+  userId: string;
+  role: string;
+  createdAt: Date;
+}
+
 export interface Share {
   id: string;
   token: string;
