@@ -78,6 +78,18 @@ export class UmamiApiClient {
     return this.get(`users/${id}`);
   }
 
+  async getUsers(): Promise<ApiResponse<Umami.User[]>> {
+    return this.get(`users`);
+  }
+
+  async getUserWebsites(id: string): Promise<ApiResponse<Umami.User[]>> {
+    return this.get(`users/${id}/websites`);
+  }
+
+  async getUserTeams(id: string): Promise<ApiResponse<Umami.User[]>> {
+    return this.get(`users/${id}/teams`);
+  }
+
   async deleteUser(id: string): Promise<ApiResponse<Umami.Empty>> {
     return this.del(`users/${id}`);
   }
@@ -98,10 +110,6 @@ export class UmamiApiClient {
   ): Promise<ApiResponse<Umami.User>> {
     const { currentPassword: current_password, newPassword: new_password } = data;
     return this.post(`users/${id}/password`, { current_password, new_password });
-  }
-
-  async getUsers(): Promise<ApiResponse<Umami.User[]>> {
-    return this.get(`users`);
   }
 
   // share
@@ -137,8 +145,8 @@ export class UmamiApiClient {
     return this.post(`websites/${id}/reset`);
   }
 
-  async getWebsites(includeAll: boolean = false): Promise<ApiResponse<Umami.Website[]>> {
-    return this.get(`websites`, { include_all: includeAll });
+  async getWebsites(): Promise<ApiResponse<Umami.Website[]>> {
+    return this.get(`websites`);
   }
 
   async getWebsiteActive(id: string): Promise<ApiResponse<Umami.WebsiteActive[]>> {
