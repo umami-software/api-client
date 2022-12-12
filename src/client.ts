@@ -1,9 +1,6 @@
 import debug from 'debug';
-import { createSecureToken, hash } from 'lib/crypto';
-import { apiRequest } from 'lib/request';
-import { buildUrl } from 'lib/url';
-import { ApiResponse } from 'lib/request';
-import * as Umami from 'models';
+import { createSecureToken, hash, apiRequest, buildUrl, ApiResponse } from 'next-basics';
+import * as Umami from './types';
 
 const log = debug('umami:api');
 
@@ -25,7 +22,7 @@ export class UmamiApiClient {
     this.secret = hash(secret);
 
     if (userId) {
-      this.setAuthToken(userId);
+      this.setAuthToken({ userId });
     }
   }
 
@@ -346,3 +343,5 @@ export class UmamiApiClient {
     return this.get('heartbeat');
   }
 }
+
+export default UmamiApiClient;
