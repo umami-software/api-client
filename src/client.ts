@@ -1,25 +1,29 @@
 import debug from 'debug';
-import { createSecureToken, hash, apiRequest, buildUrl, ApiResponse } from 'next-basics';
+import { createSecureToken, hash, get, post, put, del, buildUrl, ApiResponse } from 'next-basics';
 import * as Umami from './types';
 
 const log = debug('umami:api');
+const API_KEY_HEADER = 'x-umami-api-key';
 
 export interface UmamiApiClientOptions {
   userId?: string;
   secret?: string;
   apiEndpoint?: string;
+  apiKey?: string;
 }
 
 export class UmamiApiClient {
   apiEndpoint: string;
   secret: string;
   authToken?: string;
+  apiKey?: string;
 
   constructor(options: UmamiApiClientOptions) {
-    const { userId, secret, apiEndpoint = '' } = options;
+    const { userId, secret, apiEndpoint = '', apiKey } = options;
 
     this.apiEndpoint = apiEndpoint;
     this.secret = hash(secret);
+    this.apiKey = apiKey;
 
     if (userId) {
       this.setAuthToken({ userId });
@@ -30,40 +34,47 @@ export class UmamiApiClient {
     this.authToken = createSecureToken(data, this.secret);
   }
 
-  get(url: string, params?: object, headers?: object) {
-    log(buildUrl(`GET ${this.apiEndpoint}/${url}`, params));
+  getHeaders(headers: any = {}) {
+    if (this.authToken) {
+      headers.authorization = `Bearer ${this.authToken}`;
+    }
+    if (this.apiKey) {
+      headers[API_KEY_HEADER] = this.apiKey;
+    }
 
-    return apiRequest('get', buildUrl(`${this.apiEndpoint}/${url}`, params), undefined, {
-      ...headers,
-      authorization: `Bearer ${this.authToken}`,
-    });
+    return headers;
   }
 
-  del(url: string, params?: object, headers?: object) {
-    log(buildUrl(`DELETE ${this.apiEndpoint}/${url}`, params));
+  get(url: string, params?: object, headers?: object) {
+    const dest = buildUrl(`${this.apiEndpoint}/${url}`, params);
 
-    return apiRequest('delete', buildUrl(`${this.apiEndpoint}/${url}`, params), undefined, {
-      ...headers,
-      authorization: `Bearer ${this.authToken}`,
-    });
+    log(`GET ${dest}`);
+
+    return get(dest, undefined, this.getHeaders(headers));
   }
 
   post(url: string, params?: object, headers?: object) {
-    log(`POST ${this.apiEndpoint}/${url}`);
+    const dest = `${this.apiEndpoint}/${url}`;
 
-    return apiRequest('post', `${this.apiEndpoint}/${url}`, JSON.stringify(params), {
-      ...headers,
-      authorization: `Bearer ${this.authToken}`,
-    });
+    log(`POST ${dest}`);
+
+    return post(dest, params, this.getHeaders(headers));
   }
 
   put(url: string, params?: object, headers?: object) {
-    log(`PUT ${this.apiEndpoint}/${url}`);
+    const dest = `${this.apiEndpoint}/${url}`;
 
-    return apiRequest('put', `${this.apiEndpoint}/${url}`, JSON.stringify(params), {
-      ...headers,
-      authorization: `Bearer ${this.authToken}`,
-    });
+    log(`PUT ${dest}`);
+
+    return put(dest, params, this.getHeaders(headers));
+  }
+
+  del(url: string, params?: object, headers?: object) {
+    const dest = buildUrl(`${this.apiEndpoint}/${url}`, params);
+
+    log(`DELETE ${dest}`);
+
+    return del(dest, undefined, this.getHeaders(headers));
   }
 
   async createUser(data: { username: string; password: string }): Promise<ApiResponse<Umami.User>> {
@@ -104,8 +115,7 @@ export class UmamiApiClient {
       newPassword: string;
     },
   ): Promise<ApiResponse<Umami.User>> {
-    const { currentPassword: current_password, newPassword: new_password } = data;
-    return this.post(`users/${userId}/password`, { current_password, new_password });
+    return this.post(`users/${userId}/password`, data);
   }
 
   async getShare(shareId: string): Promise<ApiResponse<Umami.Share[]>> {
@@ -122,13 +132,13 @@ export class UmamiApiClient {
 
   async updateWebsite(
     websiteId: string,
-    data: {
+    params: {
       name: string;
       domain: string;
       shareId: string;
     },
   ): Promise<ApiResponse<Umami.Empty>> {
-    return this.post(`websites/${websiteId}`, data);
+    return this.post(`websites/${websiteId}`, params);
   }
 
   async deleteWebsite(websiteId: string): Promise<ApiResponse<Umami.Empty>> {
@@ -150,58 +160,37 @@ export class UmamiApiClient {
   async getWebsiteEventData(
     websiteId: string,
     params: {
-      startAt: Date;
-      endAt: Date;
+      startAt: number;
+      endAt: number;
       timezone: string;
       eventName?: string;
       columns: { [key: string]: 'count' | 'max' | 'min' | 'avg' | 'sum' };
       filters?: { [key: string]: any };
     },
   ): Promise<ApiResponse<Umami.WebsiteMetric[]>> {
-    const { startAt, endAt, eventName: event_name, ...rest } = params;
-
-    const start_at = startAt.getTime();
-    const end_at = endAt.getTime();
-
-    return this.post(`websites/${websiteId}/eventdata`, {
-      start_at,
-      end_at,
-      event_name,
-      ...rest,
-    });
+    return this.post(`websites/${websiteId}/eventdata`, params);
   }
 
   async getWebsiteEvents(
     websiteId: string,
     params: {
-      startAt: Date;
-      endAt: Date;
+      startAt: number;
+      endAt: number;
       unit: string;
       timezone: string;
       url?: string;
       eventName?: string;
     },
   ): Promise<ApiResponse<Umami.WebsiteMetric[]>> {
-    const { timezone: tz, eventName: event_name, startAt, endAt, ...rest } = params;
-
-    const start_at = startAt.getTime();
-    const end_at = endAt.getTime();
-
-    return this.get(`websites/${websiteId}/events`, {
-      start_at,
-      end_at,
-      event_name,
-      tz,
-      ...rest,
-    });
+    return this.get(`websites/${websiteId}/events`, params);
   }
 
   async getWebsiteMetrics(
     websiteId: string,
     params: {
       type: string;
-      startAt: Date;
-      endAt: Date;
+      startAt: number;
+      endAt: number;
       url?: string;
       referrer?: string;
       os?: string;
@@ -210,19 +199,14 @@ export class UmamiApiClient {
       country?: string;
     },
   ): Promise<ApiResponse<Umami.WebsiteMetric[]>> {
-    const { startAt, endAt, ...rest } = params;
-
-    const start_at = startAt.getTime();
-    const end_at = endAt.getTime();
-
-    return this.get(`websites/${websiteId}/metrics`, { start_at, end_at, ...rest });
+    return this.get(`websites/${websiteId}/metrics`, params);
   }
 
   async getWebsitePageviews(
     websiteId: string,
     params: {
-      startAt: Date;
-      endAt: Date;
+      startAt: number;
+      endAt: number;
       unit: string;
       timezone: string;
       url: string;
@@ -233,20 +217,15 @@ export class UmamiApiClient {
       country: string;
     },
   ): Promise<ApiResponse<Umami.WebsitePageviews>> {
-    const { startAt, endAt, timezone: tz, ...rest } = params;
-
-    const start_at = startAt.getTime();
-    const end_at = endAt.getTime();
-
-    return this.get(`websites/${websiteId}/pageviews`, { start_at, end_at, tz, ...rest });
+    return this.get(`websites/${websiteId}/pageviews`, params);
   }
 
   async getWebsiteStats(
     websiteId: string,
     params: {
       type: string;
-      startAt: Date;
-      endAt: Date;
+      startAt: number;
+      endAt: number;
       url: string;
       referrer: string;
       os: string;
@@ -255,12 +234,7 @@ export class UmamiApiClient {
       country: string;
     },
   ): Promise<ApiResponse<Umami.WebsiteStats>> {
-    const { startAt, endAt, ...rest } = params;
-
-    const start_at = startAt.getTime();
-    const end_at = endAt.getTime();
-
-    return this.get(`websites/${websiteId}/stats`, { start_at, end_at, ...rest });
+    return this.get(`websites/${websiteId}/stats`, params);
   }
 
   async createTeam(data: { name: string; domain: string }): Promise<ApiResponse<Umami.Team>> {
@@ -302,10 +276,8 @@ export class UmamiApiClient {
     return this.get(`realtime/init`);
   }
 
-  async getRealtimeUpdate(startAt: Date): Promise<ApiResponse<Umami.RealtimeUpdate>> {
-    const start_at = startAt.getTime();
-
-    return this.get(`realtime/update`, { start_at });
+  async getRealtimeUpdate(startAt: number): Promise<ApiResponse<Umami.RealtimeUpdate>> {
+    return this.get(`realtime/update`, { startAt });
   }
 
   async login(username: string, password: string) {
@@ -332,7 +304,7 @@ export class UmamiApiClient {
   ) {
     const { type, payload } = data;
 
-    return this.post('collect', { type, payload: { ...payload, website: websiteId } });
+    return this.post('collect', { type, payload: { ...payload, websiteId } });
   }
 
   async config() {

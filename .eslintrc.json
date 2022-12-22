@@ -17,19 +17,11 @@
   "extends": [
     "plugin:@typescript-eslint/recommended",
     "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:import/errors",
-    "plugin:css-modules/recommended",
     "prettier"
   ],
   "plugins": [
     "@typescript-eslint",
-    "prettier",
-    "promise",
-    "css-modules",
-    "react",
-    "react-hooks",
-    "storybook"
+    "prettier"
   ],
   "rules": {
     "linebreak-style": ["error", "unix"],
@@ -42,8 +34,6 @@
     ],
     "import/no-unresolved": "off",
     "no-unused-vars": "off",
-    "react/prop-types": "off",
-    "react/react-in-jsx-scope": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unused-vars": ["error"],
     "@typescript-eslint/no-var-requires": "off",
