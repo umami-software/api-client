@@ -1,5 +1,6 @@
 import * as uuid from 'uuid';
 import UmamiApiClient from 'UmamiApiClient';
+import { badRequest, ok } from 'next-basics';
 
 const API = Symbol();
 
@@ -146,6 +147,29 @@ export function getClient() {
   global[API] = apiClient;
 
   return apiClient;
+}
+
+export async function runQuery(req, res) {
+  const url = req.query.url.join('/');
+  const method = req.method.toLowerCase();
+
+  const { query, error } = getQuery(url, method, req.body);
+
+  if (error) {
+    return res.status(error.status).end(error.message);
+  }
+
+  if (query) {
+    const { data, error: queryError } = await query();
+
+    if (queryError) {
+      return res.status(queryError.status).end(queryError.message);
+    }
+
+    return ok(res, data);
+  }
+
+  return badRequest(res);
 }
 
 export const client = global[API] || getClient();
