@@ -310,7 +310,7 @@ export class UmamiApiClient {
     return this.get('config');
   }
 
-  async haertbeat() {
+  async heartbeat() {
     return this.get('heartbeat');
   }
 }
