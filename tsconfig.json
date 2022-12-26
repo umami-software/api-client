@@ -25,6 +25,6 @@
     ],
     "paths": { "*": ["./src/*"] }
   },
-  "include": ["./src/**/*", "test.js"],
+  "include": ["./src/**/*"],
   "exclude": ["node_modules"]
 }
