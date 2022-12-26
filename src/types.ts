@@ -34,8 +34,6 @@ export interface Share {
   token: string;
 }
 
-export interface Empty {}
-
 export interface WebsiteActive {
   x: number;
 }
@@ -81,3 +79,5 @@ export interface RealtimeUpdate {
   events: any[];
   timestamp: number;
 }
+
+export interface Empty {}

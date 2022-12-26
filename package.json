@@ -1,6 +1,6 @@
 {
   "name": "@umami/api-client",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "description": "API client for Umami Analytics",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -22,7 +22,8 @@
   "dependencies": {
     "cross-fetch": "^3.1.5",
     "debug": "^4.3.4",
-    "next-basics": "^0.24.0"
+    "next-basics": "^0.26.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.2",
@@ -43,6 +44,7 @@
     "prettier": "^2.2.1",
     "prettier-eslint": "^13.0.0",
     "rollup": "^2.78.1",
+    "rollup-plugin-exclude-dependencies-from-bundle": "^1.1.23",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-ts": "^3.0.2",

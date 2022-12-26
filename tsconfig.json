@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "declaration": true,
-    //"emitDeclarationOnly": true,
     "esModuleInterop": true,
     "noImplicitAny": false,
     "preserveConstEnums": true,
@@ -10,22 +9,15 @@
     "allowSyntheticDefaultImports": true,
     "allowJs": true,
     "strict": true,
-
     "outDir": "./dist",
     "target": "es5",
     "module": "esnext",
     "moduleResolution": "node",
     "jsx": "react-jsx",
-
     "lib": ["dom", "dom.iterable", "esnext"],
     "skipLibCheck": true,
-
     "baseUrl": ".",
     "plugins": [
-      // Transform paths in output .js files
-      //{ "transform": "typescript-transform-paths" },
-
-      // Transform paths in output .d.ts files (Include this line if you output declarations files)
       {
         "transform": "typescript-transform-paths",
         "afterDeclarations": true

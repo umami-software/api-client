@@ -1,7 +1,7 @@
-import ts from 'rollup-plugin-ts';
 import resolve from '@rollup/plugin-node-resolve';
-import external from 'rollup-plugin-peer-deps-external';
 import commonjs from '@rollup/plugin-commonjs';
+import external from 'rollup-plugin-peer-deps-external';
+import ts from 'rollup-plugin-ts';
 import { terser } from 'rollup-plugin-terser';
 
 export default [
@@ -11,7 +11,6 @@ export default [
       {
         file: 'dist/cjs/index.js',
         format: 'cjs',
-        name: 'umami-api-client',
       },
       {
         file: 'dist/esm/index.js',
@@ -19,7 +18,7 @@ export default [
       },
     ],
     plugins: [
-      external(),
+      external({ includeDependencies: true }),
       resolve(),
       commonjs(),
       ts(),
@@ -29,6 +28,5 @@ export default [
         },
       }),
     ],
-    external: ['cross-fetch'],
   },
 ];
