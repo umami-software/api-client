@@ -249,7 +249,7 @@ export class UmamiApiClient {
   }
 
   async joinTeam(data: { accessCode: string }): Promise<ApiResponse<Umami.Team>> {
-    return this.get(`teams/join`, data);
+    return this.post(`teams/join`, data);
   }
 
   async getTeamUsers(teamId: string): Promise<ApiResponse<Umami.User[]>> {
