@@ -13,6 +13,10 @@ export const queryMap = [
     post: async ({ data }) => client.createTeam(data),
   },
   {
+    path: 'teams/join',
+    post: async ({ data }) => client.joinTeam(data),
+  },
+  {
     path: 'teams/{id}',
     get: async ({ id }) => client.getTeam(id),
     post: async ({ id, data }) => client.updateTeam(id, data),
