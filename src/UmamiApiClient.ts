@@ -260,6 +260,13 @@ export class UmamiApiClient {
     return this.get(`teams/${teamId}/websites`);
   }
 
+  async createTeamWebsites(
+    teamId: string,
+    data: { websiteIds: string[] },
+  ): Promise<ApiResponse<Umami.Team>> {
+    return this.post(`teams/${teamId}/websites`, data);
+  }
+
   async updateTeam(
     teamId: string,
     data: {
