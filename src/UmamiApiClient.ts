@@ -267,6 +267,13 @@ export class UmamiApiClient {
     return this.post(`teams/${teamId}/websites`, data);
   }
 
+  async deleteTeamWebsite(
+    teamId: string,
+    data: { teamWebsiteId: string },
+  ): Promise<ApiResponse<Umami.Team>> {
+    return this.post(`teams/${teamId}/websites`, data);
+  }
+
   async updateTeam(
     teamId: string,
     data: {
