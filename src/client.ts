@@ -27,7 +27,10 @@ export const queryMap = [
     path: 'teams/{id}/websites',
     get: async ({ id }) => client.getTeamWebsites(id),
     post: async ({ id, data }) => client.createTeamWebsites(id, data),
-    delete: async ({ id, data }) => client.deleteTeamWebsite(id, data),
+  },
+  {
+    path: 'teamWebsites/{id}',
+    delete: async ({ id }) => client.deleteTeamWebsite(id),
   },
   {
     path: 'websites',
