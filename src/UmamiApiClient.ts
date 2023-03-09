@@ -268,7 +268,7 @@ export class UmamiApiClient {
   }
 
   async deleteTeamWebsite(teamWebsiteId: string): Promise<ApiResponse<Umami.Team>> {
-    return this.del(`teamwebsites/${teamWebsiteId}`);
+    return this.del(`teamWebsites/${teamWebsiteId}`);
   }
 
   async updateTeam(
