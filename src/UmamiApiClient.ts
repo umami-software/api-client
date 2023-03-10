@@ -256,6 +256,10 @@ export class UmamiApiClient {
     return this.get(`teams/${teamId}/users`);
   }
 
+  async deleteTeamUser(teamUserId: string): Promise<ApiResponse<Umami.User[]>> {
+    return this.del(`teamUsers/${teamUserId}`);
+  }
+
   async getTeamWebsites(teamId: string): Promise<ApiResponse<Umami.Website[]>> {
     return this.get(`teams/${teamId}/websites`);
   }
