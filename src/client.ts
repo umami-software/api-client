@@ -1,5 +1,5 @@
 import UmamiApiClient from 'UmamiApiClient';
-import { badRequest, ok } from 'next-basics';
+import { ApiResponse } from 'next-basics';
 
 const API = Symbol();
 
@@ -97,32 +97,6 @@ export const queryMap = [
   },
 ];
 
-export interface QueryResult {
-  query: (() => Promise<any>) | null;
-  error: { status: number; message: string } | null;
-}
-
-export function getQuery(
-  url: string,
-  method: 'get' | 'post' | 'put' | 'delete',
-  data: any,
-): QueryResult {
-  const result: QueryResult = {
-    query: null,
-    error: null,
-  };
-
-  const route = queryMap.find(({ path }) => url.match(path));
-
-  if (route && route[method]) {
-    result.query = async () => route[method](url.split('/'), data);
-  } else {
-    result.error = { status: 404, message: `Not Found: ${url}` };
-  }
-
-  return result;
-}
-
 export function getClient() {
   const apiClient = new UmamiApiClient({
     userId: process.env.UMAMI_API_USER_ID,
@@ -136,27 +110,18 @@ export function getClient() {
   return apiClient;
 }
 
-export async function runQuery(req, res) {
-  const url = req.query.url;
-  const method = req.method.toLowerCase();
+export async function runQuery(
+  url: string,
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+  data: any,
+): Promise<ApiResponse<any>> {
+  const route = queryMap.find(({ path }) => url.match(path));
+  const key = method.toLowerCase();
 
-  const { query, error } = getQuery(url, method, req.body);
-
-  if (error) {
-    return res.status(error.status).end(error.message);
+  if (route && route[key]) {
+    return route[key](url.split('/'), data);
   }
-
-  if (query) {
-    const { data, error: queryError, status } = await query();
-
-    if (queryError) {
-      return res.status(status).end(queryError);
-    }
-
-    return ok(res, data);
-  }
-
-  return badRequest(res);
+  return { ok: false, status: 404, error: { status: 404, message: `Not Found: ${url}` } };
 }
 
 export const client = global[API] || getClient();
