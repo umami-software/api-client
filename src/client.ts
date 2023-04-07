@@ -1,10 +1,7 @@
-import * as uuid from 'uuid';
 import UmamiApiClient from 'UmamiApiClient';
 import { badRequest, ok } from 'next-basics';
 
 const API = Symbol();
-
-export const notFoundError = { status: 404, message: 'Not Found' };
 
 export const queryMap = [
   {
@@ -102,7 +99,7 @@ export const queryMap = [
 
 export interface QueryResult {
   query: (() => Promise<any>) | null;
-  error: typeof notFoundError | null;
+  error: { status: number; message: string } | null;
 }
 
 export function getQuery(
@@ -120,7 +117,7 @@ export function getQuery(
   if (route && route[method]) {
     result.query = async () => route[method](url.split('/'), data);
   } else {
-    result.error = notFoundError;
+    result.error = { status: 404, message: `Not Found: ${url}` };
   }
 
   return result;
