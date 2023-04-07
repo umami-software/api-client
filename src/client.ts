@@ -150,10 +150,10 @@ export async function runQuery(req, res) {
   }
 
   if (query) {
-    const { data, error: queryError } = await query();
+    const { data, error: queryError, status } = await query();
 
     if (queryError) {
-      return res.status(queryError.status).end(queryError.message);
+      return res.status(status).end(queryError);
     }
 
     return ok(res, data);
