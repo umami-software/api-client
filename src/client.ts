@@ -110,11 +110,7 @@ export function getClient() {
   return apiClient;
 }
 
-export async function runQuery(
-  url: string,
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE',
-  data: any,
-): Promise<ApiResponse<any>> {
+export async function runQuery(url: string, method: string, data: any): Promise<ApiResponse<any>> {
   const route = queryMap.find(({ path }) => url.match(path));
   const key = method.toLowerCase();
 
