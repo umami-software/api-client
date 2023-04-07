@@ -256,8 +256,8 @@ export class UmamiApiClient {
     return this.get(`teams/${teamId}/users`);
   }
 
-  async deleteTeamUser(teamUserId: string): Promise<ApiResponse<Umami.Empty>> {
-    return this.del(`teamUsers/${teamUserId}`);
+  async deleteTeamUser(teamId: string, userId: string): Promise<ApiResponse<Umami.Empty>> {
+    return this.del(`teams/${teamId}/users/${userId}`);
   }
 
   async getTeamWebsites(teamId: string): Promise<ApiResponse<Umami.Website[]>> {
@@ -271,8 +271,8 @@ export class UmamiApiClient {
     return this.post(`teams/${teamId}/websites`, data);
   }
 
-  async deleteTeamWebsite(teamWebsiteId: string): Promise<ApiResponse<Umami.Empty>> {
-    return this.del(`teamWebsites/${teamWebsiteId}`);
+  async deleteTeamWebsite(teamId: string, websiteId: string): Promise<ApiResponse<Umami.Empty>> {
+    return this.del(`teamWebsites/${teamId}/websites/${websiteId}`);
   }
 
   async updateTeam(

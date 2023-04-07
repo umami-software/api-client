@@ -8,92 +8,95 @@ export const notFoundError = { status: 404, message: 'Not Found' };
 
 export const queryMap = [
   {
-    path: 'teams',
+    path: /^teams/,
     get: async () => client.getTeams(),
-    post: async ({ data }) => client.createTeam(data),
+    post: async (args, data) => client.createTeam(data),
   },
   {
-    path: 'teams/join',
-    post: async ({ data }) => client.joinTeam(data),
+    path: /^teams\/join/,
+    post: async (args, data) => client.joinTeam(data),
   },
   {
-    path: 'teams/{id}',
-    get: async ({ id }) => client.getTeam(id),
-    post: async ({ id, data }) => client.updateTeam(id, data),
-    delete: async ({ id }) => client.deleteTeam(id),
+    path: /^teams\/[0-9-]+/,
+    get: async ([, id]) => client.getTeam(id),
+    post: async ([, id], data) => client.updateTeam(id, data),
+    delete: async ([, id]) => client.deleteTeam(id),
   },
-  { path: 'teams/{id}/users', get: async ({ id }) => client.getTeamUsers(id) },
-  { path: 'teamUsers/{id}', delete: async ({ id }) => client.deleteTeamUser(id) },
+  { path: /^teams\/[0-9-]+\/users/, get: async ([, id]) => client.getTeamUsers(id) },
   {
-    path: 'teams/{id}/websites',
-    get: async ({ id }) => client.getTeamWebsites(id),
-    post: async ({ id, data }) => client.createTeamWebsites(id, data),
+    path: /^team\/[0-9-]+\/users\/[0-9-]+/,
+    delete: async ([, teamId, , userId]) => client.deleteTeamUser(teamId, userId),
   },
   {
-    path: 'teamWebsites/{id}',
-    delete: async ({ id }) => client.deleteTeamWebsite(id),
+    path: /^teams\/[0-9-]+\/websites/,
+    get: async ([, id]) => client.getTeamWebsites(id),
+    post: async ([, id], data) => client.createTeamWebsites(id, data),
   },
   {
-    path: 'websites',
+    path: /^teams\/[0-9-]+\/websites\/[0-9-]+/,
+    delete: async ([, teamId, , websiteId]) => client.deleteTeamWebsite(teamId, websiteId),
+  },
+  {
+    path: /^websites/,
     get: async () => client.getWebsites(),
-    post: async ({ data }) => client.createWebsite(data),
+    post: async (args, data) => client.createWebsite(data),
   },
   {
-    path: 'websites/{id}',
-    get: async ({ id }) => client.getWebsite(id),
-    post: async ({ id, data }) => client.updateWebsite(id, data),
-    delete: async ({ id }) => client.deleteWebsite(id),
+    path: /^websites\/[0-9-]+/,
+    get: async ([, id]) => client.getWebsite(id),
+    post: async ([, id], data) => client.updateWebsite(id, data),
+    delete: async ([, id]) => client.deleteWebsite(id),
   },
   {
-    path: 'websites/{id}/active',
-    get: async ({ id }) => client.getWebsiteActive(id),
+    path: /^websites\/[0-9-]+\/active/,
+    get: async ([, id]) => client.getWebsiteActive(id),
   },
   {
-    path: 'websites/{id}/eventdata',
-    get: async ({ id, data }) => client.getWebsiteEventData(id, data),
+    path: /^websites\/[0-9-]+\/eventdata/,
+    get: async ([, id], data) => client.getWebsiteEventData(id, data),
   },
   {
-    path: 'websites/{id}/events',
-    get: async ({ id, data }) => client.getWebsiteEvents(id, data),
+    path: /^websites\/[0-9-]+\/events/,
+    get: async ([, id], data) => client.getWebsiteEvents(id, data),
   },
   {
-    path: 'websites/{id}/metrics',
-    get: async ({ id, data }) => client.getWebsiteMetrics(id, data),
+    path: /^websites\/[0-9-]+\/metrics/,
+    get: async ([, id], data) => client.getWebsiteMetrics(id, data),
   },
   {
-    path: 'websites/{id}/pageviews',
-    get: async ({ id, data }) => client.getWebsitePageviews(id, data),
+    path: /^websites\/[0-9-]+\/pageviews/,
+    get: async ([, id], data) => client.getWebsitePageviews(id, data),
   },
   {
-    path: 'websites/{id}/reset',
-    post: ({ id }) => client.resetWebsite(id),
+    path: /^websites\/[0-9-]+\/reset/,
+    post: ([, id]) => client.resetWebsite(id),
   },
   {
-    path: 'websites/{id}/stats',
-    get: async ({ id, data }) => client.getWebsiteStats(id, data),
+    path: /^websites\/[0-9-]+\/stats/,
+    get: async ([, id], data) => client.getWebsiteStats(id, data),
   },
   {
-    path: 'users',
+    path: /^users/,
     get: async () => client.getUsers(),
-    post: async ({ data }) => client.createUser(data),
+    post: async (args, data) => client.createUser(data),
   },
   {
-    path: 'users/{id}',
-    get: async ({ id }) => client.getUser(id),
-    post: async ({ id, data }) => client.updateUser(id, data),
-    delete: async ({ id }) => client.deleteUser(id),
+    path: /^users\/[0-9-]+/,
+    get: async ([, id]) => client.getUser(id),
+    post: async ([, id], data) => client.updateUser(id, data),
+    delete: async ([, id]) => client.deleteUser(id),
   },
   {
-    path: 'users/{id}/password',
-    post: async ({ id, data }) => client.updateUserPassword(id, data),
+    path: /^users\/[0-9-]+\/password/,
+    post: async ([, id], data) => client.updateUserPassword(id, data),
   },
   {
-    path: 'users/{id}/websites',
-    get: async ({ id }) => client.getUserWebsites(id),
+    path: /^users\/[0-9-]+\/websites/,
+    get: async ([, id]) => client.getUserWebsites(id),
   },
   {
-    path: 'users/{id}/teams',
-    get: async ({ id }) => client.getUserTeams(id),
+    path: /^users\/[0-9-]+\/teams/,
+    get: async ([, id]) => client.getUserTeams(id),
   },
 ];
 
@@ -107,46 +110,20 @@ export function getQuery(
   method: 'get' | 'post' | 'put' | 'delete',
   data: any,
 ): QueryResult {
-  const { path, id } = getQueryPath(url.split('/'));
-  const route = queryMap.find(a => a.path === path);
-
   const result: QueryResult = {
     query: null,
     error: null,
   };
 
-  if (route) {
-    const key = method.toLowerCase();
+  const route = queryMap.find(({ path }) => url.match(path));
 
-    if (route[key]) {
-      result.query = async () => route[key]({ id, data });
-    } else {
-      result.error = notFoundError;
-    }
+  if (route && route[method]) {
+    result.query = async () => route[method](url.split('/'), data);
   } else {
     result.error = notFoundError;
   }
 
   return result;
-}
-
-export function getQueryPath(segments: string[]): {
-  path: string;
-  id: string;
-} {
-  return segments.reduce(
-    (obj, segment) => {
-      if (uuid.validate(segment)) {
-        obj.path += '/{id}';
-        obj.id = segment;
-      } else {
-        obj.path += obj.path ? `/${segment}` : segment;
-      }
-
-      return obj;
-    },
-    { path: '', id: '' },
-  );
 }
 
 export function getClient() {
@@ -163,7 +140,7 @@ export function getClient() {
 }
 
 export async function runQuery(req, res) {
-  const url = req.query.url.join('/');
+  const url = req.query.url;
   const method = req.method.toLowerCase();
 
   const { query, error } = getQuery(url, method, req.body);
