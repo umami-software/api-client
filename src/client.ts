@@ -21,7 +21,7 @@ export const queryMap = [
   },
   { path: /^teams\/[0-9a-f-]+\/users$/, get: async ([, id]) => client.getTeamUsers(id) },
   {
-    path: /^team\/[0-9a-f-]+\/users\/[0-9a-f-]+$/,
+    path: /^teams\/[0-9a-f-]+\/users\/[0-9a-f-]+$/,
     delete: async ([, teamId, , userId]) => client.deleteTeamUser(teamId, userId),
   },
   {
