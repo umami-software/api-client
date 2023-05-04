@@ -95,6 +95,10 @@ export const queryMap = [
     path: /^users\/[0-9a-f-]+\/teams$/,
     get: async ([, id]) => client.getUserTeams(id),
   },
+  {
+    path: /^users\/[0-9a-f-]+\/usage$/,
+    get: async ([, id], data) => client.getUserUsage(id, data),
+  },
 ];
 
 export function getClient() {

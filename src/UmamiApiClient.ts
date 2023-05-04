@@ -88,6 +88,27 @@ export class UmamiApiClient {
     return this.get(`users`);
   }
 
+  async getUserUsage(
+    userId: string,
+    params: {
+      startAt: number;
+      endAt: number;
+    },
+  ): Promise<
+    ApiResponse<{
+      websiteEventUsage: number;
+      eventDataUsage: number;
+      websites: {
+        websiteEventUsage: number;
+        eventDataUsage: number;
+        websiteId: string;
+        websiteName: string;
+      }[];
+    }>
+  > {
+    return this.get(`users/${userId}/usage`, params);
+  }
+
   async getUserWebsites(userId: string): Promise<ApiResponse<Umami.User[]>> {
     return this.get(`users/${userId}/websites`);
   }
