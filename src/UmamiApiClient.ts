@@ -94,18 +94,7 @@ export class UmamiApiClient {
       startAt: number;
       endAt: number;
     },
-  ): Promise<
-    ApiResponse<{
-      websiteEventUsage: number;
-      eventDataUsage: number;
-      websites: {
-        websiteEventUsage: number;
-        eventDataUsage: number;
-        websiteId: string;
-        websiteName: string;
-      }[];
-    }>
-  > {
+  ) {
     return this.get(`users/${userId}/usage`, params);
   }
 
