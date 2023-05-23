@@ -102,10 +102,6 @@ export class UmamiApiClient {
     return this.get(`users/${userId}/websites`);
   }
 
-  async getUserTeams(userId: string): Promise<ApiResponse<Umami.User[]>> {
-    return this.get(`users/${userId}/teams`);
-  }
-
   async deleteUser(userId: string): Promise<ApiResponse<Umami.Empty>> {
     return this.del(`users/${userId}`);
   }
@@ -115,16 +111,6 @@ export class UmamiApiClient {
     data: { username: string; password: string },
   ): Promise<ApiResponse<Umami.User>> {
     return this.post(`users/${userId}`, data);
-  }
-
-  async updateUserPassword(
-    userId: string,
-    data: {
-      currentPassword: string;
-      newPassword: string;
-    },
-  ): Promise<ApiResponse<Umami.User>> {
-    return this.post(`users/${userId}/password`, data);
   }
 
   async getShare(shareId: string): Promise<ApiResponse<Umami.Share[]>> {
@@ -169,12 +155,20 @@ export class UmamiApiClient {
   async getWebsiteEventData(
     websiteId: string,
     params: {
-      startAt: number;
-      endAt: number;
-      timezone: string;
+      startAt: string;
+      endAt: string;
       eventName?: string;
-      columns: { [key: string]: 'count' | 'max' | 'min' | 'avg' | 'sum' };
-      filters?: { [key: string]: any };
+      urlPath?: string;
+      timeSeries?: {
+        unit: string;
+        timezone: string;
+      };
+      filters: [
+        {
+          eventKey?: string;
+          eventValue?: string | number | boolean | Date;
+        },
+      ];
     },
   ): Promise<ApiResponse<Umami.WebsiteMetric[]>> {
     return this.post(`websites/${websiteId}/eventdata`, params);
@@ -183,12 +177,12 @@ export class UmamiApiClient {
   async getWebsiteEvents(
     websiteId: string,
     params: {
-      startAt: number;
-      endAt: number;
+      startAt: string;
+      endAt: string;
       unit: string;
       timezone: string;
-      url?: string;
-      eventName?: string;
+      url: string;
+      eventName: string;
     },
   ): Promise<ApiResponse<Umami.WebsiteMetric[]>> {
     return this.get(`websites/${websiteId}/events`, params);
@@ -200,12 +194,17 @@ export class UmamiApiClient {
       type: string;
       startAt: number;
       endAt: number;
-      url?: string;
-      referrer?: string;
-      os?: string;
-      browser?: string;
-      device?: string;
-      country?: string;
+      url: string;
+      referrer: string;
+      title: string;
+      query: string;
+      event: string;
+      os: string;
+      browser: string;
+      device: string;
+      country: string;
+      region: string;
+      city: string;
     },
   ): Promise<ApiResponse<Umami.WebsiteMetric[]>> {
     return this.get(`websites/${websiteId}/metrics`, params);
@@ -218,12 +217,15 @@ export class UmamiApiClient {
       endAt: number;
       unit: string;
       timezone: string;
-      url: string;
-      referrer: string;
-      os: string;
-      browser: string;
-      device: string;
-      country: string;
+      url?: string;
+      referrer?: string;
+      title?: string;
+      os?: string;
+      browser?: string;
+      device?: string;
+      country?: string;
+      region: string;
+      city?: string;
     },
   ): Promise<ApiResponse<Umami.WebsitePageviews>> {
     return this.get(`websites/${websiteId}/pageviews`, params);
@@ -232,15 +234,19 @@ export class UmamiApiClient {
   async getWebsiteStats(
     websiteId: string,
     params: {
-      type: string;
       startAt: number;
       endAt: number;
       url: string;
       referrer: string;
+      title: string;
+      query: string;
+      event: string;
       os: string;
       browser: string;
       device: string;
       country: string;
+      region: string;
+      city: string;
     },
   ): Promise<ApiResponse<Umami.WebsiteStats>> {
     return this.get(`websites/${websiteId}/stats`, params);
@@ -300,14 +306,6 @@ export class UmamiApiClient {
     return this.del(`teams/${teamId}`);
   }
 
-  async getRealtimeInit(): Promise<ApiResponse<Umami.RealtimeInit>> {
-    return this.get(`realtime/init`);
-  }
-
-  async getRealtimeUpdate(startAt: number): Promise<ApiResponse<Umami.RealtimeUpdate>> {
-    return this.get(`realtime/update`, { startAt });
-  }
-
   async login(username: string, password: string) {
     return this.post('auth/login', { username, password });
   }
@@ -316,23 +314,44 @@ export class UmamiApiClient {
     return this.get('auth/verify');
   }
 
-  async collect(
+  async getMe() {
+    return this.get('me');
+  }
+
+  async getMyWebsites() {
+    return this.post('me/websites');
+  }
+
+  async updateMyPassword(data: { currentPassword: string; newPassword: string }) {
+    return this.post('me/password', data);
+  }
+
+  async getRealtime(
     websiteId: string,
     data: {
-      type: 'event' | 'pageview';
-      payload: {
-        url: string;
-        referrer: string;
-        hostname?: string;
-        language?: string;
-        screen?: string;
-        eventData?: { [key: string]: any };
-      };
+      startAt: number;
     },
   ) {
+    return this.get(`realtime/${websiteId}`, data);
+  }
+
+  async send(data: {
+    type: 'event';
+    payload: {
+      data: { [key: string]: any };
+      hostname: string;
+      language: string;
+      referrer: string;
+      screen: string;
+      title: string;
+      url: string;
+      website: string;
+      name: string;
+    };
+  }) {
     const { type, payload } = data;
 
-    return this.post('collect', { type, payload: { ...payload, websiteId } });
+    return this.post('collect', { type, payload });
   }
 
   async config() {

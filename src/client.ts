@@ -5,6 +5,22 @@ const API = Symbol();
 
 export const queryMap = [
   {
+    path: /^me$/,
+    get: async () => client.getMe(),
+  },
+  {
+    path: /^me\/password$/,
+    post: async (args, data) => client.updateMyPassword(data),
+  },
+  {
+    path: /^me\/websites$/,
+    get: async () => client.getMyWebsites(),
+  },
+  {
+    path: /^realtime\/[0-9a-f-]+$/,
+    get: async ([, id], data) => client.getRealtime(id, data),
+  },
+  {
     path: /^teams$/,
     get: async () => client.getTeams(),
     post: async (args, data) => client.createTeam(data),
@@ -32,6 +48,25 @@ export const queryMap = [
   {
     path: /^teams\/[0-9a-f-]+\/websites\/[0-9a-f-]+$/,
     delete: async ([, teamId, , websiteId]) => client.deleteTeamWebsite(teamId, websiteId),
+  },
+  {
+    path: /^users$/,
+    get: async () => client.getUsers(),
+    post: async (args, data) => client.createUser(data),
+  },
+  {
+    path: /^users\/[0-9a-f-]+$/,
+    get: async ([, id]) => client.getUser(id),
+    post: async ([, id], data) => client.updateUser(id, data),
+    delete: async ([, id]) => client.deleteUser(id),
+  },
+  {
+    path: /^users\/[0-9a-f-]+\/websites$/,
+    get: async ([, id]) => client.getUserWebsites(id),
+  },
+  {
+    path: /^users\/[0-9a-f-]+\/usage$/,
+    get: async ([, id], data) => client.getUserUsage(id, data),
   },
   {
     path: /^websites$/,
@@ -71,33 +106,6 @@ export const queryMap = [
   {
     path: /^websites\/[0-9a-f-]+\/stats$/,
     get: async ([, id], data) => client.getWebsiteStats(id, data),
-  },
-  {
-    path: /^users$/,
-    get: async () => client.getUsers(),
-    post: async (args, data) => client.createUser(data),
-  },
-  {
-    path: /^users\/[0-9a-f-]+$/,
-    get: async ([, id]) => client.getUser(id),
-    post: async ([, id], data) => client.updateUser(id, data),
-    delete: async ([, id]) => client.deleteUser(id),
-  },
-  {
-    path: /^users\/[0-9a-f-]+\/password$/,
-    post: async ([, id], data) => client.updateUserPassword(id, data),
-  },
-  {
-    path: /^users\/[0-9a-f-]+\/websites$/,
-    get: async ([, id]) => client.getUserWebsites(id),
-  },
-  {
-    path: /^users\/[0-9a-f-]+\/teams$/,
-    get: async ([, id]) => client.getUserTeams(id),
-  },
-  {
-    path: /^users\/[0-9a-f-]+\/usage$/,
-    get: async ([, id], data) => client.getUserUsage(id, data),
   },
 ];
 

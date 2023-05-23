@@ -3,18 +3,10 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 (async () => {
-  console.log(apiClient.client);
-
-  apiClient.client.setAuthToken({ userId: process.env.UMAMI_TEST_USER_ID });
+  apiClient.client = apiClient.getClient();
 
   try {
-    const x = await apiClient.runQuery(
-      {
-        query: { url: ['teams', 'join'] },
-        method: 'post',
-      },
-      {},
-    );
+    const x = await apiClient.client.getWebsites();
 
     console.log(x);
   } catch (e) {
