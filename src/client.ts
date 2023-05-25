@@ -109,7 +109,7 @@ export const queryMap = [
   },
 ];
 
-export function getClient() {
+export function getClient(): UmamiApiClient {
   const apiClient = new UmamiApiClient({
     userId: process.env.UMAMI_API_USER_ID,
     secret: process.env.UMAMI_API_CLIENT_SECRET,
@@ -132,4 +132,4 @@ export async function runQuery(url: string, method: string, data: any): Promise<
   return { ok: false, status: 404, error: { status: 404, message: `Not Found: ${url}` } };
 }
 
-export const client = global[API] || getClient();
+export const client: UmamiApiClient = global[API] || getClient();
