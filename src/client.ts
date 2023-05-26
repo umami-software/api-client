@@ -17,10 +17,6 @@ export const queryMap = [
     get: async () => client.getMyWebsites(),
   },
   {
-    path: /^realtime\/[0-9a-f-]+$/,
-    get: async ([, id], data) => client.getRealtime(id, data),
-  },
-  {
     path: /^teams$/,
     get: async () => client.getTeams(),
     post: async (args, data) => client.createTeam(data),
