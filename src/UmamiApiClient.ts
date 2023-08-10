@@ -181,8 +181,8 @@ export class UmamiApiClient {
       endAt: string;
       unit: string;
       timezone: string;
-      url: string;
-      eventName: string;
+      url?: string;
+      eventName?: string;
     },
   ): Promise<ApiResponse<Umami.WebsiteMetric[]>> {
     return this.get(`websites/${websiteId}/events`, params);
@@ -194,17 +194,17 @@ export class UmamiApiClient {
       type: string;
       startAt: number;
       endAt: number;
-      url: string;
-      referrer: string;
-      title: string;
-      query: string;
-      event: string;
-      os: string;
-      browser: string;
-      device: string;
-      country: string;
-      region: string;
-      city: string;
+      url?: string;
+      referrer?: string;
+      title?: string;
+      query?: string;
+      event?: string;
+      os?: string;
+      browser?: string;
+      device?: string;
+      country?: string;
+      region?: string;
+      city?: string;
     },
   ): Promise<ApiResponse<Umami.WebsiteMetric[]>> {
     return this.get(`websites/${websiteId}/metrics`, params);
@@ -237,16 +237,16 @@ export class UmamiApiClient {
       startAt: number;
       endAt: number;
       url: string;
-      referrer: string;
-      title: string;
-      query: string;
-      event: string;
-      os: string;
-      browser: string;
-      device: string;
-      country: string;
-      region: string;
-      city: string;
+      referrer?: string;
+      title?: string;
+      query?: string;
+      event?: string;
+      os?: string;
+      browser?: string;
+      device?: string;
+      country?: string;
+      region?: string;
+      city?: string;
     },
   ): Promise<ApiResponse<Umami.WebsiteStats>> {
     return this.get(`websites/${websiteId}/stats`, params);
