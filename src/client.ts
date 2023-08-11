@@ -14,11 +14,15 @@ export const queryMap = [
   },
   {
     path: /^me\/websites$/,
-    get: async () => client.getMyWebsites(),
+    get: async (args, data) => client.getMyWebsites(data),
+  },
+  {
+    path: /^me\/teams$/,
+    get: async (args, data) => client.getMyTeams(data),
   },
   {
     path: /^teams$/,
-    get: async () => client.getTeams(),
+    get: async (args, data) => client.getTeams(data),
     post: async (args, data) => client.createTeam(data),
   },
   {
@@ -31,14 +35,17 @@ export const queryMap = [
     post: async ([, id], data) => client.updateTeam(id, data),
     delete: async ([, id]) => client.deleteTeam(id),
   },
-  { path: /^teams\/[0-9a-f-]+\/users$/, get: async ([, id]) => client.getTeamUsers(id) },
+  {
+    path: /^teams\/[0-9a-f-]+\/users$/,
+    get: async ([, id], data) => client.getTeamUsers(id, data),
+  },
   {
     path: /^teams\/[0-9a-f-]+\/users\/[0-9a-f-]+$/,
     delete: async ([, teamId, , userId]) => client.deleteTeamUser(teamId, userId),
   },
   {
     path: /^teams\/[0-9a-f-]+\/websites$/,
-    get: async ([, id]) => client.getTeamWebsites(id),
+    get: async ([, id], data) => client.getTeamWebsites(id, data),
     post: async ([, id], data) => client.createTeamWebsites(id, data),
   },
   {
@@ -47,7 +54,7 @@ export const queryMap = [
   },
   {
     path: /^users$/,
-    get: async () => client.getUsers(),
+    get: async (args, data) => client.getUsers(data),
     post: async (args, data) => client.createUser(data),
   },
   {
@@ -58,7 +65,7 @@ export const queryMap = [
   },
   {
     path: /^users\/[0-9a-f-]+\/websites$/,
-    get: async ([, id]) => client.getUserWebsites(id),
+    get: async ([, id], data) => client.getUserWebsites(id, data),
   },
   {
     path: /^users\/[0-9a-f-]+\/usage$/,
@@ -66,7 +73,7 @@ export const queryMap = [
   },
   {
     path: /^websites$/,
-    get: async () => client.getWebsites(),
+    get: async (args, data) => client.getWebsites(data),
     post: async (args, data) => client.createWebsite(data),
   },
   {
