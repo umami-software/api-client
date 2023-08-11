@@ -147,7 +147,7 @@ export class UmamiApiClient {
     return this.post(`websites/${websiteId}/reset`);
   }
 
-  async getWebsites(params: Umami.WebsiteSearchFilter): Promise<ApiResponse<Umami.Website[]>> {
+  async getWebsites(params?: Umami.WebsiteSearchFilter): Promise<ApiResponse<Umami.Website[]>> {
     return this.get(`websites`, params);
   }
 
@@ -263,7 +263,7 @@ export class UmamiApiClient {
     return this.get(`teams/${teamId}`);
   }
 
-  async getTeams(params: Umami.TeamSearchFilter): Promise<ApiResponse<Umami.Team[]>> {
+  async getTeams(params?: Umami.TeamSearchFilter): Promise<ApiResponse<Umami.Team[]>> {
     return this.get(`teams`, params);
   }
 
@@ -273,7 +273,7 @@ export class UmamiApiClient {
 
   async getTeamUsers(
     teamId: string,
-    params: Umami.UserSearchFilter,
+    params?: Umami.UserSearchFilter,
   ): Promise<ApiResponse<Umami.User[]>> {
     return this.get(`teams/${teamId}/users`, params);
   }
@@ -284,7 +284,7 @@ export class UmamiApiClient {
 
   async getTeamWebsites(
     teamId: string,
-    params: Umami.WebsiteSearchFilter,
+    params?: Umami.WebsiteSearchFilter,
   ): Promise<ApiResponse<Umami.Website[]>> {
     return this.get(`teams/${teamId}/websites`, params);
   }
@@ -327,11 +327,11 @@ export class UmamiApiClient {
     return this.get('me');
   }
 
-  async getMyWebsites(params: Umami.WebsiteSearchFilter) {
+  async getMyWebsites(params?: Umami.WebsiteSearchFilter) {
     return this.get('me/websites', params);
   }
 
-  async getMyTeams(params: Umami.TeamSearchFilter) {
+  async getMyTeams(params?: Umami.TeamSearchFilter) {
     return this.get('me/teams', params);
   }
 
