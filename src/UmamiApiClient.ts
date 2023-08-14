@@ -1,6 +1,7 @@
 import { createSecureToken, hash, get, post, put, del, buildUrl, ApiResponse } from 'next-basics';
 import * as Umami from './types';
 import { log } from 'utils';
+import { FilterResult } from './types';
 
 export const API_KEY_HEADER = 'x-umami-api-key';
 
@@ -84,7 +85,7 @@ export class UmamiApiClient {
     return this.get(`users/${userId}`);
   }
 
-  async getUsers(params: Umami.UserSearchFilter): Promise<ApiResponse<Umami.User[]>> {
+  async getUsers(params: Umami.UserSearchFilter): Promise<ApiResponse<FilterResult<Umami.User[]>>> {
     return this.get(`users`, params);
   }
 
@@ -101,7 +102,7 @@ export class UmamiApiClient {
   async getUserWebsites(
     userId: string,
     params: Umami.WebsiteSearchFilter,
-  ): Promise<ApiResponse<Umami.User[]>> {
+  ): Promise<ApiResponse<FilterResult<Umami.User[]>>> {
     return this.get(`users/${userId}/websites`, params);
   }
 
@@ -147,7 +148,9 @@ export class UmamiApiClient {
     return this.post(`websites/${websiteId}/reset`);
   }
 
-  async getWebsites(params?: Umami.WebsiteSearchFilter): Promise<ApiResponse<Umami.Website[]>> {
+  async getWebsites(
+    params?: Umami.WebsiteSearchFilter,
+  ): Promise<ApiResponse<FilterResult<Umami.Website[]>>> {
     return this.get(`websites`, params);
   }
 
@@ -274,7 +277,7 @@ export class UmamiApiClient {
   async getTeamUsers(
     teamId: string,
     params?: Umami.UserSearchFilter,
-  ): Promise<ApiResponse<Umami.User[]>> {
+  ): Promise<ApiResponse<FilterResult<FilterResult<Umami.User[]>>>> {
     return this.get(`teams/${teamId}/users`, params);
   }
 
@@ -285,7 +288,7 @@ export class UmamiApiClient {
   async getTeamWebsites(
     teamId: string,
     params?: Umami.WebsiteSearchFilter,
-  ): Promise<ApiResponse<Umami.Website[]>> {
+  ): Promise<ApiResponse<FilterResult<FilterResult<Umami.Website[]>>>> {
     return this.get(`teams/${teamId}/websites`, params);
   }
 
