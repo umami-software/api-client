@@ -1,3 +1,10 @@
+import {
+  REPORT_FILTER_TYPES,
+  TEAM_FILTER_TYPES,
+  USER_FILTER_TYPES,
+  WEBSITE_FILTER_TYPES,
+} from './constants';
+
 export interface User {
   id: string;
   username: string;
@@ -89,3 +96,45 @@ export interface WebsiteEventData {
 }
 
 export interface Empty {}
+
+type ObjectValues<T> = T[keyof T];
+
+export type ReportSearchFilterType = ObjectValues<typeof REPORT_FILTER_TYPES>;
+export type UserSearchFilterType = ObjectValues<typeof USER_FILTER_TYPES>;
+export type WebsiteSearchFilterType = ObjectValues<typeof WEBSITE_FILTER_TYPES>;
+export type TeamSearchFilterType = ObjectValues<typeof TEAM_FILTER_TYPES>;
+
+export interface WebsiteSearchFilter extends SearchFilter<WebsiteSearchFilterType> {
+  userId?: string;
+  teamId?: string;
+  includeTeams?: boolean;
+}
+
+export interface UserSearchFilter extends SearchFilter<UserSearchFilterType> {
+  teamId?: string;
+}
+
+export interface TeamSearchFilter extends SearchFilter<TeamSearchFilterType> {
+  userId?: string;
+}
+
+export interface ReportSearchFilter extends SearchFilter<ReportSearchFilterType> {
+  userId?: string;
+  websiteId?: string;
+}
+
+export interface SearchFilter<T> {
+  filter?: string;
+  filterType?: T;
+  pageSize?: number;
+  page?: number;
+  orderBy?: string;
+}
+
+export interface FilterResult<T> {
+  data: T;
+  count: number;
+  pageSize: number;
+  page: number;
+  orderBy?: string;
+}
