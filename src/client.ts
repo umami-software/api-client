@@ -17,6 +17,18 @@ export const queryMap = [
     get: async () => client.getMyWebsites(),
   },
   {
+    path: /^event-data\/events$/,
+    get: async ([, id], data) => client.getEventDataEvents(id, data),
+  },
+  {
+    path: /^event-data\/fields$/,
+    get: async ([, id], data) => client.getEventDataFields(id, data),
+  },
+  {
+    path: /^event-data\/stats$/,
+    get: async ([, id], data) => client.getEventDataStats(id, data),
+  },
+  {
     path: /^teams$/,
     get: async () => client.getTeams(),
     post: async (args, data) => client.createTeam(data),
@@ -78,10 +90,6 @@ export const queryMap = [
   {
     path: /^websites\/[0-9a-f-]+\/active$/,
     get: async ([, id]) => client.getWebsiteActive(id),
-  },
-  {
-    path: /^websites\/[0-9a-f-]+\/eventdata$/,
-    get: async ([, id], data) => client.getWebsiteEventData(id, data),
   },
   {
     path: /^websites\/[0-9a-f-]+\/events$/,

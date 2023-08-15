@@ -80,4 +80,12 @@ export interface RealtimeUpdate {
   timestamp: number;
 }
 
+export interface WebsiteEventData {
+  eventName?: string;
+  fieldName: string;
+  dataType: number;
+  fieldValue?: string;
+  total: number;
+}
+
 export interface Empty {}

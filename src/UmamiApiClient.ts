@@ -335,6 +335,39 @@ export class UmamiApiClient {
     return this.get(`realtime/${websiteId}`, data);
   }
 
+  async getEventDataEvents(
+    websiteId: string,
+    params: {
+      startDate;
+      endDate;
+      event;
+    },
+  ): Promise<ApiResponse<Umami.WebsiteEventData>> {
+    return this.get(`event-data/events`, { websiteId, params });
+  }
+
+  async getEventDataFields(
+    websiteId: string,
+    params: {
+      startDate;
+      endDate;
+      field;
+    },
+  ): Promise<ApiResponse<Umami.WebsiteEventData>> {
+    return this.get(`event-data/fields`, { websiteId, params });
+  }
+
+  async getEventDataStats(
+    websiteId: string,
+    params: {
+      startDate;
+      endDate;
+      field;
+    },
+  ) {
+    return this.get(`event-data/stats`, { websiteId, params });
+  }
+
   async send(data: {
     type: 'event';
     payload: {
