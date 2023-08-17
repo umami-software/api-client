@@ -378,7 +378,6 @@ export class UmamiApiClient {
     params: {
       startDate;
       endDate;
-      field;
     },
   ) {
     return this.get(`event-data/stats`, { websiteId, params });
