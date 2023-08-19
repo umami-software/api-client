@@ -49,7 +49,7 @@ export class UmamiApiClient {
 
     log(`GET ${dest}`);
 
-    return get(dest, undefined, this.getHeaders(headers));
+    return get(dest, undefined, { ...this.getHeaders(headers), ...{ 'Content-Type': undefined } });
   }
 
   post(url: string, params?: object, headers?: object) {
