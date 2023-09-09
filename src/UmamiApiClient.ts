@@ -1,7 +1,16 @@
-import { createSecureToken, hash, get, post, put, del, buildUrl, ApiResponse } from 'next-basics';
-import * as Umami from './types';
+import {
+  createSecureToken,
+  hash,
+  httpGet,
+  httpPost,
+  httpPut,
+  httpDelete,
+  buildUrl,
+  ApiResponse,
+} from 'next-basics';
+import * as Umami from 'types';
 import { log } from 'utils';
-import { FilterResult } from './types';
+import { FilterResult } from 'types';
 
 export const API_KEY_HEADER = 'x-umami-api-key';
 
@@ -50,7 +59,9 @@ export class UmamiApiClient {
 
     log(`GET ${dest}`, params, headers);
 
-    return get(dest, undefined, { ...this.getHeaders(headers), ...{ 'Content-Type': undefined } });
+    return httpGet(dest, undefined, {
+      ...this.getHeaders(headers),
+    });
   }
 
   post(url: string, params?: object, headers?: object) {
@@ -58,7 +69,7 @@ export class UmamiApiClient {
 
     log(`POST ${dest}`, params, headers);
 
-    return post(dest, params, this.getHeaders(headers));
+    return httpPost(dest, params, this.getHeaders(headers));
   }
 
   put(url: string, params?: object, headers?: object) {
@@ -66,7 +77,7 @@ export class UmamiApiClient {
 
     log(`PUT ${dest}`, params, headers);
 
-    return put(dest, params, this.getHeaders(headers));
+    return httpPut(dest, params, this.getHeaders(headers));
   }
 
   del(url: string, params?: object, headers?: object) {
@@ -74,7 +85,7 @@ export class UmamiApiClient {
 
     log(`DELETE ${dest}`, params, headers);
 
-    return del(dest, undefined, this.getHeaders(headers));
+    return httpDelete(dest, undefined, this.getHeaders(headers));
   }
 
   async createUser(data: { username: string; password: string }): Promise<ApiResponse<Umami.User>> {

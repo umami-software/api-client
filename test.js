@@ -3,10 +3,12 @@ const apiClient = require('./dist/cjs/index');
 const dotenv = require('dotenv');
 dotenv.config();
 
+const START_AT = 1682924400000;
+const END_AT = 1696143599999;
+
 describe('Testing all get functions', () => {
   beforeAll(() => {
     apiClient.client = apiClient.getClient();
-    return;
   });
 
   async function testGetWebsites() {
@@ -21,6 +23,7 @@ describe('Testing all get functions', () => {
 
   async function testGetMe() {
     const results = await apiClient.client.getMe();
+
     return results.ok;
   }
 
@@ -30,8 +33,8 @@ describe('Testing all get functions', () => {
 
   async function testGetWebsiteMetrics() {
     const results = await apiClient.client.getWebsiteMetrics(process.env.UMAMI_WEBSITE_ID, {
-      startAt: 1685566800000,
-      endAt: 1686916052440,
+      startAt: START_AT,
+      endAt: END_AT,
       type: 'url',
     });
 
@@ -44,8 +47,8 @@ describe('Testing all get functions', () => {
 
   async function testGetWebsitePageviews() {
     const results = await apiClient.client.getWebsitePageviews(process.env.UMAMI_WEBSITE_ID, {
-      startAt: 1685566800000,
-      endAt: 1686916052440,
+      startAt: START_AT,
+      endAt: END_AT,
       url: '/',
       timezone: 'America/Los_Angeles',
     });
@@ -59,8 +62,8 @@ describe('Testing all get functions', () => {
 
   async function testGetWebsitesStats() {
     const results = await apiClient.client.getWebsiteStats(process.env.UMAMI_WEBSITE_ID, {
-      startAt: 1685566800000,
-      endAt: 1686916052440,
+      startAt: START_AT,
+      endAt: END_AT,
       url: '/',
     });
 
