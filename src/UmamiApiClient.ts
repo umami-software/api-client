@@ -43,6 +43,14 @@ export class UmamiApiClient {
     this.authToken = createSecureToken(data, this.secret);
   }
 
+  setSecret(secret) {
+    this.secret = secret;
+  }
+
+  setApiEndPoint(url) {
+    this.apiEndpoint = url;
+  }
+
   getHeaders(headers: any = {}) {
     if (this.authToken) {
       headers.authorization = `Bearer ${this.authToken}`;
