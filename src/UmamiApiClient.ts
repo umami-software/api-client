@@ -10,7 +10,6 @@ import {
 } from 'next-basics';
 import * as Umami from 'types';
 import { log } from 'utils';
-import { FilterResult } from 'types';
 
 export const API_KEY_HEADER = 'x-umami-api-key';
 
@@ -39,15 +38,15 @@ export class UmamiApiClient {
     }
   }
 
-  setAuthToken(data) {
+  setAuthToken(data: object) {
     this.authToken = createSecureToken(data, this.secret);
   }
 
-  setSecret(secret) {
+  setSecret(secret: string) {
     this.secret = secret;
   }
 
-  setApiEndPoint(url) {
+  setApiEndPoint(url: string) {
     this.apiEndpoint = url;
   }
 
@@ -72,12 +71,12 @@ export class UmamiApiClient {
     });
   }
 
-  post(url: string, params?: object, headers?: object) {
+  post(url: string, data?: object, headers?: object) {
     const dest = `${this.apiEndpoint}/${url}`;
 
-    log(`POST ${dest}`, params, headers);
+    log(`POST ${dest}`, data, headers);
 
-    return httpPost(dest, params, this.getHeaders(headers));
+    return httpPost(dest, data, this.getHeaders(headers));
   }
 
   put(url: string, params?: object, headers?: object) {
@@ -104,7 +103,9 @@ export class UmamiApiClient {
     return this.get(`users/${userId}`);
   }
 
-  async getUsers(params: Umami.UserSearchFilter): Promise<ApiResponse<FilterResult<Umami.User[]>>> {
+  async getUsers(
+    params: Umami.UserSearchParams,
+  ): Promise<ApiResponse<Umami.ParamsResult<Umami.User[]>>> {
     return this.get(`users`, params);
   }
 
@@ -120,8 +121,8 @@ export class UmamiApiClient {
 
   async getUserWebsites(
     userId: string,
-    params: Umami.WebsiteSearchFilter,
-  ): Promise<ApiResponse<FilterResult<Umami.User[]>>> {
+    params: Umami.WebsiteSearchParams,
+  ): Promise<ApiResponse<Umami.ParamsResult<Umami.User[]>>> {
     return this.get(`users/${userId}/websites`, params);
   }
 
@@ -168,8 +169,8 @@ export class UmamiApiClient {
   }
 
   async getWebsites(
-    params?: Umami.WebsiteSearchFilter,
-  ): Promise<ApiResponse<FilterResult<Umami.Website[]>>> {
+    params?: Umami.WebsiteSearchParams,
+  ): Promise<ApiResponse<Umami.ParamsResult<Umami.Website[]>>> {
     return this.get(`websites`, params);
   }
 
@@ -285,7 +286,7 @@ export class UmamiApiClient {
     return this.get(`teams/${teamId}`);
   }
 
-  async getTeams(params?: Umami.TeamSearchFilter): Promise<ApiResponse<Umami.Team[]>> {
+  async getTeams(params?: Umami.TeamSearchParams): Promise<ApiResponse<Umami.Team[]>> {
     return this.get(`teams`, params);
   }
 
@@ -295,8 +296,8 @@ export class UmamiApiClient {
 
   async getTeamUsers(
     teamId: string,
-    params?: Umami.UserSearchFilter,
-  ): Promise<ApiResponse<FilterResult<FilterResult<Umami.User[]>>>> {
+    params?: Umami.UserSearchParams,
+  ): Promise<ApiResponse<Umami.ParamsResult<Umami.ParamsResult<Umami.User[]>>>> {
     return this.get(`teams/${teamId}/users`, params);
   }
 
@@ -306,12 +307,12 @@ export class UmamiApiClient {
 
   async getTeamWebsites(
     teamId: string,
-    params?: Umami.WebsiteSearchFilter,
-  ): Promise<ApiResponse<FilterResult<FilterResult<Umami.Website[]>>>> {
+    params?: Umami.WebsiteSearchParams,
+  ): Promise<ApiResponse<Umami.ParamsResult<Umami.ParamsResult<Umami.Website[]>>>> {
     return this.get(`teams/${teamId}/websites`, params);
   }
 
-  async createTeamWebsites(
+  async createTeamWebsite(
     teamId: string,
     data: { websiteIds: string[] },
   ): Promise<ApiResponse<Umami.Team>> {
@@ -349,11 +350,11 @@ export class UmamiApiClient {
     return this.get('me');
   }
 
-  async getMyWebsites(params?: Umami.WebsiteSearchFilter) {
+  async getMyWebsites(params?: Umami.WebsiteSearchParams) {
     return this.get('me/websites', params);
   }
 
-  async getMyTeams(params?: Umami.TeamSearchFilter) {
+  async getMyTeams(params?: Umami.TeamSearchParams) {
     return this.get('me/teams', params);
   }
 
@@ -373,9 +374,9 @@ export class UmamiApiClient {
   async getEventDataEvents(
     websiteId: string,
     params: {
-      startDate;
-      endDate;
-      event;
+      startAt: number;
+      endAt: number;
+      event?: string;
     },
   ): Promise<ApiResponse<Umami.WebsiteEventData>> {
     return this.get(`event-data/events`, { websiteId, params });
@@ -384,9 +385,9 @@ export class UmamiApiClient {
   async getEventDataFields(
     websiteId: string,
     params: {
-      startDate;
-      endDate;
-      field;
+      startAt: number;
+      endAt: number;
+      field?: string;
     },
   ): Promise<ApiResponse<Umami.WebsiteEventData>> {
     return this.get(`event-data/fields`, { websiteId, params });
@@ -395,8 +396,8 @@ export class UmamiApiClient {
   async getEventDataStats(
     websiteId: string,
     params: {
-      startDate;
-      endDate;
+      startAt: number;
+      endAt: number;
     },
   ) {
     return this.get(`event-data/stats`, { websiteId, params });
@@ -418,7 +419,7 @@ export class UmamiApiClient {
   }) {
     const { type, payload } = data;
 
-    return this.post('collect', { type, payload });
+    return this.post('send', { type, payload });
   }
 
   async config() {
@@ -427,6 +428,221 @@ export class UmamiApiClient {
 
   async heartbeat() {
     return this.get('heartbeat');
+  }
+
+  async executeRoute(url: string, method: string, data: any): Promise<ApiResponse<any>> {
+    const routes = [
+      {
+        path: /^me$/,
+        get: async () => this.getMe(),
+      },
+      {
+        path: /^me\/password$/,
+        post: async (
+          [],
+          data: {
+            currentPassword: string;
+            newPassword: string;
+          },
+        ) => this.updateMyPassword(data),
+      },
+      {
+        path: /^me\/websites$/,
+        get: async ([]: any, data: Umami.WebsiteSearchParams) => this.getMyWebsites(data),
+      },
+      {
+        path: /^me\/teams$/,
+        get: async ([]: any, data: Umami.TeamSearchParams) => this.getMyTeams(data),
+      },
+      {
+        path: /^event-data\/events$/,
+        get: async (
+          [, id]: any,
+          data: {
+            startAt: number;
+            endAt: number;
+            event?: string;
+          },
+        ) => this.getEventDataEvents(id, data),
+      },
+      {
+        path: /^event-data\/fields$/,
+        get: async (
+          [, id]: any,
+          data: { startAt: number; endAt: number; field?: string | undefined },
+        ) => this.getEventDataFields(id, data),
+      },
+      {
+        path: /^event-data\/stats$/,
+        get: async ([, id]: any, data: { startAt: number; endAt: number }) =>
+          this.getEventDataStats(id, data),
+      },
+      {
+        path: /^teams$/,
+        get: async ([]: any, data: Umami.TeamSearchParams | undefined) => this.getTeams(data),
+        post: async ([]: any, data: { name: string; domain: string }) => this.createTeam(data),
+      },
+      {
+        path: /^teams\/join$/,
+        post: async ([]: any, data: { accessCode: string }) => this.joinTeam(data),
+      },
+      {
+        path: /^teams\/[0-9a-f-]+$/,
+        get: async ([, id]: any) => this.getTeam(id),
+        post: async ([, id]: any, data: { name: string; domain: string; shareId: string }) =>
+          this.updateTeam(id, data),
+        delete: async ([, id]: any) => this.deleteTeam(id),
+      },
+      {
+        path: /^teams\/[0-9a-f-]+\/users$/,
+        get: async ([, id]: any, data: Umami.UserSearchParams | undefined) =>
+          this.getTeamUsers(id, data),
+      },
+      {
+        path: /^teams\/[0-9a-f-]+\/users\/[0-9a-f-]+$/,
+        delete: async ([, teamId, , userId]: any) => this.deleteTeamUser(teamId, userId),
+      },
+      {
+        path: /^teams\/[0-9a-f-]+\/websites$/,
+        get: async ([, id]: any, data: Umami.WebsiteSearchParams | undefined) =>
+          this.getTeamWebsites(id, data),
+        post: async ([, id]: any, data: { websiteIds: string[] }) =>
+          this.createTeamWebsite(id, data),
+      },
+      {
+        path: /^teams\/[0-9a-f-]+\/websites\/[0-9a-f-]+$/,
+        delete: async ([, teamId, , websiteId]: any) => this.deleteTeamWebsite(teamId, websiteId),
+      },
+      {
+        path: /^users$/,
+        get: async ([]: any, data: Umami.UserSearchParams) => this.getUsers(data),
+        post: async ([]: any, data: { username: string; password: string }) =>
+          this.createUser(data),
+      },
+      {
+        path: /^users\/[0-9a-f-]+$/,
+        get: async ([, id]: any) => this.getUser(id),
+        post: async ([, id]: any, data: { username: string; password: string }) =>
+          this.updateUser(id, data),
+        delete: async ([, id]: any) => this.deleteUser(id),
+      },
+      {
+        path: /^users\/[0-9a-f-]+\/websites$/,
+        get: async ([, id]: any, data: Umami.WebsiteSearchParams) => this.getUserWebsites(id, data),
+      },
+      {
+        path: /^users\/[0-9a-f-]+\/usage$/,
+        get: async ([, id]: any, data: { startAt: number; endAt: number }) =>
+          this.getUserUsage(id, data),
+      },
+      {
+        path: /^websites$/,
+        get: async ([]: any, data: Umami.WebsiteSearchParams | undefined) => this.getWebsites(data),
+        post: async ([]: any, data: { name: string; domain: string }) => this.createWebsite(data),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+$/,
+        get: async ([, id]: any) => this.getWebsite(id),
+        post: async ([, id]: any, data: { name: string; domain: string; shareId: string }) =>
+          this.updateWebsite(id, data),
+        delete: async ([, id]: any) => this.deleteWebsite(id),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+\/active$/,
+        get: async ([, id]: any) => this.getWebsiteActive(id),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+\/events$/,
+        get: async (
+          [, id]: any,
+          data: {
+            startAt: string;
+            endAt: string;
+            unit: string;
+            timezone: string;
+            url?: string | undefined;
+            eventName?: string | undefined;
+          },
+        ) => this.getWebsiteEvents(id, data),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+\/metrics$/,
+        get: async (
+          [, id]: any,
+          data: {
+            type: string;
+            startAt: number;
+            endAt: number;
+            url?: string | undefined;
+            referrer?: string | undefined;
+            title?: string | undefined;
+            query?: string | undefined;
+            event?: string | undefined;
+            os?: string | undefined;
+            browser?: string | undefined;
+            device?: string | undefined;
+            country?: string | undefined;
+            region?: string | undefined;
+            city?: string | undefined;
+          },
+        ) => this.getWebsiteMetrics(id, data),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+\/pageviews$/,
+        get: async (
+          [, id]: any,
+          data: {
+            startAt: number;
+            endAt: number;
+            unit: string;
+            timezone: string;
+            url?: string | undefined;
+            referrer?: string | undefined;
+            title?: string | undefined;
+            os?: string | undefined;
+            browser?: string | undefined;
+            device?: string | undefined;
+            country?: string | undefined;
+            region: string;
+            city?: string | undefined;
+          },
+        ) => this.getWebsitePageviews(id, data),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+\/reset$/,
+        post: ([, id]: any) => this.resetWebsite(id),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+\/stats$/,
+        get: async (
+          [, id]: any,
+          data: {
+            startAt: number;
+            endAt: number;
+            url: string;
+            referrer?: string | undefined;
+            title?: string | undefined;
+            query?: string | undefined;
+            event?: string | undefined;
+            os?: string | undefined;
+            browser?: string | undefined;
+            device?: string | undefined;
+            country?: string | undefined;
+            region?: string | undefined;
+            city?: string | undefined;
+          },
+        ) => this.getWebsiteStats(id, data),
+      },
+    ];
+
+    const route = routes.find(({ path }) => url.match(path));
+    const key = method.toLowerCase();
+
+    if (route && route[key]) {
+      return route[key](url.split('/'), data);
+    }
+
+    return { ok: false, status: 404, error: { status: 404, message: `Not Found: ${url}` } };
   }
 }
 

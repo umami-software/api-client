@@ -1,10 +1,3 @@
-import {
-  REPORT_FILTER_TYPES,
-  TEAM_FILTER_TYPES,
-  USER_FILTER_TYPES,
-  WEBSITE_FILTER_TYPES,
-} from './constants';
-
 export interface User {
   id: string;
   username: string;
@@ -97,41 +90,34 @@ export interface WebsiteEventData {
 
 export interface Empty {}
 
-type ObjectValues<T> = T[keyof T];
-
-export type ReportSearchFilterType = ObjectValues<typeof REPORT_FILTER_TYPES>;
-export type UserSearchFilterType = ObjectValues<typeof USER_FILTER_TYPES>;
-export type WebsiteSearchFilterType = ObjectValues<typeof WEBSITE_FILTER_TYPES>;
-export type TeamSearchFilterType = ObjectValues<typeof TEAM_FILTER_TYPES>;
-
-export interface WebsiteSearchFilter extends SearchFilter<WebsiteSearchFilterType> {
+export interface WebsiteSearchParams extends SearchParams {
   userId?: string;
   teamId?: string;
   includeTeams?: boolean;
 }
 
-export interface UserSearchFilter extends SearchFilter<UserSearchFilterType> {
+export interface UserSearchParams extends SearchParams {
   teamId?: string;
 }
 
-export interface TeamSearchFilter extends SearchFilter<TeamSearchFilterType> {
+export interface TeamSearchParams extends SearchParams {
   userId?: string;
 }
 
-export interface ReportSearchFilter extends SearchFilter<ReportSearchFilterType> {
+export interface ReportSearchParams extends SearchParams {
   userId?: string;
   websiteId?: string;
 }
 
-export interface SearchFilter<T> {
-  filter?: string;
-  filterType?: T;
-  pageSize?: number;
+export interface SearchParams {
+  query?: string;
   page?: number;
+  pageSize?: number;
   orderBy?: string;
+  sortDescending?: boolean;
 }
 
-export interface FilterResult<T> {
+export interface ParamsResult<T> {
   data: T;
   count: number;
   pageSize: number;
