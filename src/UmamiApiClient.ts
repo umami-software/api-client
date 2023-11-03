@@ -207,7 +207,7 @@ export class UmamiApiClient {
       endAt: string;
       unit: string;
       timezone: string;
-      url?: string;
+      url_path?: string;
       eventName?: string;
     },
   ): Promise<ApiResponse<Umami.WebsiteMetric[]>> {
@@ -220,7 +220,7 @@ export class UmamiApiClient {
       type: string;
       startAt: number;
       endAt: number;
-      url?: string;
+      url_path?: string;
       referrer?: string;
       title?: string;
       query?: string;
@@ -243,14 +243,14 @@ export class UmamiApiClient {
       endAt: number;
       unit: string;
       timezone: string;
-      url?: string;
+      url_path?: string;
       referrer?: string;
       title?: string;
       os?: string;
       browser?: string;
       device?: string;
       country?: string;
-      region: string;
+      region?: string;
       city?: string;
     },
   ): Promise<ApiResponse<Umami.WebsitePageviews>> {
@@ -262,7 +262,7 @@ export class UmamiApiClient {
     params: {
       startAt: number;
       endAt: number;
-      url: string;
+      url_path?: string;
       referrer?: string;
       title?: string;
       query?: string;
@@ -560,7 +560,7 @@ export class UmamiApiClient {
             endAt: string;
             unit: string;
             timezone: string;
-            url?: string | undefined;
+            url_path?: string | undefined;
             eventName?: string | undefined;
           },
         ) => this.getWebsiteEvents(id, data),
@@ -573,7 +573,7 @@ export class UmamiApiClient {
             type: string;
             startAt: number;
             endAt: number;
-            url?: string | undefined;
+            url_path?: string | undefined;
             referrer?: string | undefined;
             title?: string | undefined;
             query?: string | undefined;
@@ -596,14 +596,14 @@ export class UmamiApiClient {
             endAt: number;
             unit: string;
             timezone: string;
-            url?: string | undefined;
+            url_path?: string | undefined;
             referrer?: string | undefined;
             title?: string | undefined;
             os?: string | undefined;
             browser?: string | undefined;
             device?: string | undefined;
             country?: string | undefined;
-            region: string;
+            region?: string | undefined;
             city?: string | undefined;
           },
         ) => this.getWebsitePageviews(id, data),
@@ -619,7 +619,7 @@ export class UmamiApiClient {
           data: {
             startAt: number;
             endAt: number;
-            url: string;
+            url_path?: string | undefined;
             referrer?: string | undefined;
             title?: string | undefined;
             query?: string | undefined;
