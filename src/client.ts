@@ -8,6 +8,10 @@ export function getClient(params?: {
   apiEndpoint?: string;
   apiKey?: string;
 }): UmamiApiClient {
+  if (global[API]) {
+    return global[API];
+  }
+
   const {
     userId = process.env.UMAMI_API_USER_ID,
     secret = process.env.UMAMI_API_CLIENT_SECRET,
@@ -26,5 +30,3 @@ export function getClient(params?: {
 
   return apiClient;
 }
-
-export const client: UmamiApiClient = global[API] || getClient();
