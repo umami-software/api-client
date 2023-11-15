@@ -97,7 +97,12 @@ export class UmamiApiClient {
     return httpDelete(dest, undefined, this.getHeaders(headers));
   }
 
-  async createUser(data: { username: string; password: string }): Promise<ApiResponse<Umami.User>> {
+  async createUser(data: {
+    id?: string;
+    username: string;
+    password: string;
+    role?: string;
+  }): Promise<ApiResponse<Umami.User>> {
     return this.post(`users`, data);
   }
 
