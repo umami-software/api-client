@@ -16,7 +16,12 @@ export function getClient(params?: {
     apiKey = process.env.UMAMI_API_KEY,
   } = params || {};
 
-  log('Client Init: ', params);
+  log('Client Init: ', {
+    userId,
+    secret,
+    apiEndpoint,
+    apiKey,
+  });
 
   const apiClient = new UmamiApiClient({
     userId,
