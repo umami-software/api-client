@@ -446,7 +446,7 @@ export class UmamiApiClient {
       {
         path: /^me\/password$/,
         post: async (
-          [,],
+          [],
           data: {
             currentPassword: string;
             newPassword: string;
@@ -455,11 +455,11 @@ export class UmamiApiClient {
       },
       {
         path: /^me\/websites$/,
-        get: async ([,], data: Umami.WebsiteSearchParams) => this.getMyWebsites(data),
+        get: async ([], data: Umami.WebsiteSearchParams) => this.getMyWebsites(data),
       },
       {
         path: /^me\/teams$/,
-        get: async ([,], data: Umami.TeamSearchParams) => this.getMyTeams(data),
+        get: async ([], data: Umami.TeamSearchParams) => this.getMyTeams(data),
       },
       {
         path: /^event-data\/events$/,
@@ -486,12 +486,12 @@ export class UmamiApiClient {
       },
       {
         path: /^teams$/,
-        get: async ([,], data: Umami.TeamSearchParams | undefined) => this.getTeams(data),
-        post: async ([,], data: { name: string; domain: string }) => this.createTeam(data),
+        get: async ([], data: Umami.TeamSearchParams | undefined) => this.getTeams(data),
+        post: async ([], data: { name: string; domain: string }) => this.createTeam(data),
       },
       {
         path: /^teams\/join$/,
-        post: async ([,]: any, data: { accessCode: string }) => this.joinTeam(data),
+        post: async ([]: any, data: { accessCode: string }) => this.joinTeam(data),
       },
       {
         path: /^teams\/[0-9a-f-]+$/,
@@ -522,8 +522,8 @@ export class UmamiApiClient {
       },
       {
         path: /^users$/,
-        get: async ([,]: any, data: Umami.UserSearchParams) => this.getUsers(data),
-        post: async ([,]: any, data: { username: string; password: string }) =>
+        get: async ([]: any, data: Umami.UserSearchParams) => this.getUsers(data),
+        post: async ([]: any, data: { username: string; password: string }) =>
           this.createUser(data),
       },
       {
@@ -544,9 +544,8 @@ export class UmamiApiClient {
       },
       {
         path: /^websites$/,
-        get: async ([,]: any, data: Umami.WebsiteSearchParams | undefined) =>
-          this.getWebsites(data),
-        post: async ([,]: any, data: { name: string; domain: string }) => this.createWebsite(data),
+        get: async ([]: any, data: Umami.WebsiteSearchParams | undefined) => this.getWebsites(data),
+        post: async ([]: any, data: { name: string; domain: string }) => this.createWebsite(data),
       },
       {
         path: /^websites\/[0-9a-f-]+$/,
