@@ -1,7 +1,5 @@
 import UmamiApiClient from 'UmamiApiClient';
-import debug from 'debug';
-
-export const log = debug('umami:api');
+import { log } from './log';
 
 export function getClient(params?: {
   userId?: string;
@@ -16,19 +14,17 @@ export function getClient(params?: {
     apiKey = process.env.UMAMI_API_KEY,
   } = params || {};
 
-  log('Client Init: ', {
+  log({
     userId,
     secret,
     apiEndpoint,
     apiKey,
   });
 
-  const apiClient = new UmamiApiClient({
+  return new UmamiApiClient({
     userId,
     secret,
     apiEndpoint,
     apiKey,
   });
-
-  return apiClient;
 }
