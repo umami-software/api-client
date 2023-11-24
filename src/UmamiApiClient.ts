@@ -386,7 +386,7 @@ export class UmamiApiClient {
       event?: string;
     },
   ): Promise<ApiResponse<Umami.WebsiteEventData>> {
-    return this.get(`event-data/events`, { websiteId, params });
+    return this.get(`event-data/events`, { websiteId, ...params });
   }
 
   async getEventDataFields(
@@ -397,7 +397,7 @@ export class UmamiApiClient {
       field?: string;
     },
   ): Promise<ApiResponse<Umami.WebsiteEventData>> {
-    return this.get(`event-data/fields`, { websiteId, params });
+    return this.get(`event-data/fields`, { websiteId, ...params });
   }
 
   async getEventDataStats(
@@ -407,7 +407,7 @@ export class UmamiApiClient {
       endAt: number;
     },
   ) {
-    return this.get(`event-data/stats`, { websiteId, params });
+    return this.get(`event-data/stats`, { websiteId, ...params });
   }
 
   async send(data: {
