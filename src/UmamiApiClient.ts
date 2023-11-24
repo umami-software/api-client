@@ -9,9 +9,7 @@ import {
   ApiResponse,
 } from 'next-basics';
 import * as Umami from 'types';
-import debug from 'debug';
-
-export const log = debug('umami:api');
+import { log } from './log';
 
 export const API_KEY_HEADER = 'x-umami-api-key';
 
