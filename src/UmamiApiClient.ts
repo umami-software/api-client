@@ -148,6 +148,43 @@ export class UmamiApiClient {
     return this.get(`share/${shareId}`);
   }
 
+  async getReport(reportId): Promise<ApiResponse<Umami.Report>> {
+    return this.get(`reports/${reportId}`);
+  }
+
+  async updateReport(
+    reportId,
+    data: {
+      websiteId: string;
+      type: string;
+      name: string;
+      description: string;
+      parameters: string;
+    },
+  ): Promise<ApiResponse<Umami.Report>> {
+    return this.post(`reports/${reportId}`, data);
+  }
+
+  async deleteReport(reportId): Promise<ApiResponse<Umami.Report>> {
+    return this.del(`reports/${reportId}`);
+  }
+
+  async getReports(params?: Umami.SearchParams): Promise<ApiResponse<Umami.Report[]>> {
+    return this.get(`reports`, params);
+  }
+
+  async createReport(data: {
+    websiteId: string;
+    name: string;
+    type: string;
+    description: string;
+    parameters: {
+      [key: string]: any;
+    };
+  }): Promise<ApiResponse<Umami.Report>> {
+    return this.post(`reports`, data);
+  }
+
   async createWebsite(data: { name: string; domain: string }): Promise<ApiResponse<Umami.Website>> {
     return this.post(`websites`, data);
   }
@@ -308,6 +345,21 @@ export class UmamiApiClient {
     return this.get(`teams/${teamId}/users`, params);
   }
 
+  async createTeamUser(
+    teamId: string,
+    data: { userId: string; role: string },
+  ): Promise<ApiResponse<Umami.ParamsResult<Umami.ParamsResult<Umami.TeamUser>>>> {
+    return this.post(`teams/${teamId}/users`, data);
+  }
+
+  async updateTeamMember(
+    teamId: string,
+    userId: string,
+    data: { role: string },
+  ): Promise<ApiResponse<Umami.ParamsResult<Umami.ParamsResult<Umami.TeamUser>>>> {
+    return this.post(`teams/${teamId}/users/${userId}`, data);
+  }
+
   async deleteTeamUser(teamId: string, userId: string): Promise<ApiResponse<Umami.Empty>> {
     return this.del(`teams/${teamId}/users/${userId}`);
   }
@@ -321,7 +373,7 @@ export class UmamiApiClient {
 
   async createTeamWebsite(
     teamId: string,
-    data: { websiteIds: string[] },
+    data: { name: string; domain: string; shareId: string },
   ): Promise<ApiResponse<Umami.Team>> {
     return this.post(`teams/${teamId}/websites`, data);
   }
@@ -410,6 +462,38 @@ export class UmamiApiClient {
     return this.get(`event-data/stats`, { websiteId, ...params });
   }
 
+  async showFunnelReport(data: {
+    websiteId: string;
+    urls: string[];
+    window: number;
+    dateRange: {
+      startDate: string;
+      endDate: string;
+    };
+  }) {
+    return this.post(`reports/funnel`, data);
+  }
+
+  async showInsightsReport(data: {
+    websiteId: string;
+    dateRange: {
+      startDate: string;
+      endDate: string;
+    };
+    fields: { name: string; type: string; label: string }[];
+    filters: { name: string; type: string; filter: string; value: string }[];
+    groups: { name: string; type: string }[];
+  }) {
+    return this.post(`reports/insights`, data);
+  }
+
+  async showRetentionReport(data: {
+    websiteId: string;
+    dateRange: { startDate: string; endDate: string; timezone: string };
+  }) {
+    return this.post(`reports/rentention`, data);
+  }
+
   async send(data: {
     type: 'event';
     payload: {
@@ -440,28 +524,6 @@ export class UmamiApiClient {
   async executeRoute(url: string, method: string, data: any): Promise<ApiResponse<any>> {
     const routes = [
       {
-        path: /^me$/,
-        get: async () => this.getMe(),
-      },
-      {
-        path: /^me\/password$/,
-        post: async (
-          [],
-          data: {
-            currentPassword: string;
-            newPassword: string;
-          },
-        ) => this.updateMyPassword(data),
-      },
-      {
-        path: /^me\/websites$/,
-        get: async ([], data: Umami.WebsiteSearchParams) => this.getMyWebsites(data),
-      },
-      {
-        path: /^me\/teams$/,
-        get: async ([], data: Umami.TeamSearchParams) => this.getMyTeams(data),
-      },
-      {
         path: /^event-data\/events$/,
         get: async (
           [, id]: any,
@@ -485,6 +547,104 @@ export class UmamiApiClient {
           this.getEventDataStats(id, data),
       },
       {
+        path: /^me$/,
+        get: async () => this.getMe(),
+      },
+      {
+        path: /^me\/password$/,
+        post: async (
+          [],
+          data: {
+            currentPassword: string;
+            newPassword: string;
+          },
+        ) => this.updateMyPassword(data),
+      },
+      {
+        path: /^me\/teams$/,
+        get: async ([], data: Umami.TeamSearchParams) => this.getMyTeams(data),
+      },
+      {
+        path: /^me\/websites$/,
+        get: async ([], data: Umami.WebsiteSearchParams) => this.getMyWebsites(data),
+      },
+      {
+        path: /^realtime\/[0-9a-f-]+$/,
+        get: async ([, id], data: { startAt: number }) => this.getRealtime(id, data),
+      },
+      {
+        path: /^reports\/[0-9a-f-]+$/,
+        get: async ([, id]) => this.getReport(id),
+        post: async (
+          [, id],
+          data: {
+            websiteId: string;
+            type: string;
+            name: string;
+            description: string;
+            parameters: string;
+          },
+        ) => this.updateReport(id, data),
+        delete: async ([, id]) => this.deleteReport(id),
+      },
+      {
+        path: /^reports$/,
+        get: async ([], data: Umami.SearchParams) => this.getReports(data),
+        post: async (
+          [],
+          data: {
+            websiteId: string;
+            name: string;
+            type: string;
+            description: string;
+            parameters: {
+              [key: string]: any;
+            };
+          },
+        ) => this.createReport(data),
+      },
+      {
+        path: /^reports\/funnel$/,
+        post: async (
+          [],
+          data: {
+            websiteId: string;
+            urls: string[];
+            window: number;
+            dateRange: {
+              startDate: string;
+              endDate: string;
+            };
+          },
+        ) => this.showFunnelReport(data),
+      },
+      {
+        path: /^reports\/insight$/,
+        post: async (
+          [],
+          data: {
+            websiteId: string;
+            dateRange: {
+              startDate: string;
+              endDate: string;
+            };
+            fields: { name: string; type: string; label: string }[];
+            filters: { name: string; type: string; filter: string; value: string }[];
+            groups: { name: string; type: string }[];
+          },
+        ) => this.showInsightsReport(data),
+      },
+      {
+        path: /^reports\/retention$/,
+        post: async (
+          [],
+          data: {
+            websiteId: string;
+            dateRange: { startDate: string; endDate: string; timezone: string };
+          },
+        ) => this.showRetentionReport(data),
+      },
+      {
         path: /^teams$/,
         get: async ([], data: Umami.TeamSearchParams | undefined) => this.getTeams(data),
         post: async ([], data: { name: string; domain: string }) => this.createTeam(data),
@@ -504,21 +664,21 @@ export class UmamiApiClient {
         path: /^teams\/[0-9a-f-]+\/users$/,
         get: async ([, id]: any, data: Umami.UserSearchParams | undefined) =>
           this.getTeamUsers(id, data),
+        post: async ([, id]: any, data: { userId: string; role: string }) =>
+          this.createTeamUser(id, data),
       },
       {
         path: /^teams\/[0-9a-f-]+\/users\/[0-9a-f-]+$/,
+        post: async ([, teamId, , userId]: any, data: { role: string }) =>
+          this.updateTeamMember(teamId, userId, data),
         delete: async ([, teamId, , userId]: any) => this.deleteTeamUser(teamId, userId),
       },
       {
         path: /^teams\/[0-9a-f-]+\/websites$/,
         get: async ([, id]: any, data: Umami.WebsiteSearchParams | undefined) =>
           this.getTeamWebsites(id, data),
-        post: async ([, id]: any, data: { websiteIds: string[] }) =>
+        post: async ([, id]: any, data: { name: string; domain: string; shareId: string }) =>
           this.createTeamWebsite(id, data),
-      },
-      {
-        path: /^teams\/[0-9a-f-]+\/websites\/[0-9a-f-]+$/,
-        delete: async ([, teamId, , websiteId]: any) => this.deleteTeamWebsite(teamId, websiteId),
       },
       {
         path: /^users$/,

@@ -15,6 +15,18 @@ export interface Website {
   createdAt: Date;
 }
 
+export interface Report {
+  id: string;
+  userId: string;
+  websiteId: string;
+  type: string;
+  name: string;
+  description: string;
+  parameters: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface Team {
   id: string;
   name: string;
