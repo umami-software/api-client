@@ -345,6 +345,13 @@ export class UmamiApiClient {
     return this.get(`teams/${teamId}/users`, params);
   }
 
+  async getTeamUser(
+    teamId: string,
+    userId: string,
+  ): Promise<ApiResponse<Umami.ParamsResult<Umami.ParamsResult<Umami.User[]>>>> {
+    return this.get(`teams/${teamId}/users/${userId}`);
+  }
+
   async createTeamUser(
     teamId: string,
     data: { userId: string; role: string },
@@ -669,6 +676,7 @@ export class UmamiApiClient {
       },
       {
         path: /^teams\/[0-9a-f-]+\/users\/[0-9a-f-]+$/,
+        get: async ([, id, , userId]: any) => this.getTeamUser(id, userId),
         post: async ([, teamId, , userId]: any, data: { role: string }) =>
           this.updateTeamMember(teamId, userId, data),
         delete: async ([, teamId, , userId]: any) => this.deleteTeamUser(teamId, userId),
