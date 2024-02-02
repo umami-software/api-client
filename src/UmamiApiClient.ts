@@ -676,7 +676,7 @@ export class UmamiApiClient {
       },
       {
         path: /^teams\/[0-9a-f-]+\/users\/[0-9a-f-]+$/,
-        get: async ([, id, , userId]: any) => this.getTeamUser(id, userId),
+        get: async ([, teamId, , userId]: any) => this.getTeamUser(teamId, userId),
         post: async ([, teamId, , userId]: any, data: { role: string }) =>
           this.updateTeamMember(teamId, userId, data),
         delete: async ([, teamId, , userId]: any) => this.deleteTeamUser(teamId, userId),
