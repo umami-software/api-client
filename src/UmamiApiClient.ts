@@ -341,21 +341,18 @@ export class UmamiApiClient {
   async getTeamUsers(
     teamId: string,
     params?: Umami.UserSearchParams,
-  ): Promise<ApiResponse<Umami.ParamsResult<Umami.ParamsResult<Umami.User[]>>>> {
+  ): Promise<ApiResponse<Umami.User[]>> {
     return this.get(`teams/${teamId}/users`, params);
   }
 
-  async getTeamUser(
-    teamId: string,
-    userId: string,
-  ): Promise<ApiResponse<Umami.ParamsResult<Umami.ParamsResult<Umami.User[]>>>> {
+  async getTeamUser(teamId: string, userId: string): Promise<ApiResponse<Umami.User[]>> {
     return this.get(`teams/${teamId}/users/${userId}`);
   }
 
   async createTeamUser(
     teamId: string,
     data: { userId: string; role: string },
-  ): Promise<ApiResponse<Umami.ParamsResult<Umami.ParamsResult<Umami.TeamUser>>>> {
+  ): Promise<ApiResponse<Umami.TeamUser>> {
     return this.post(`teams/${teamId}/users`, data);
   }
 
@@ -363,7 +360,7 @@ export class UmamiApiClient {
     teamId: string,
     userId: string,
     data: { role: string },
-  ): Promise<ApiResponse<Umami.ParamsResult<Umami.ParamsResult<Umami.TeamUser>>>> {
+  ): Promise<ApiResponse<Umami.TeamUser>> {
     return this.post(`teams/${teamId}/users/${userId}`, data);
   }
 
