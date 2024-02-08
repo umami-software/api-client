@@ -129,7 +129,7 @@ export interface SearchParams {
   sortDescending?: boolean;
 }
 
-export interface ParamsResult<T> {
+export interface SearchResult<T> {
   data: T;
   count: number;
   pageSize: number;

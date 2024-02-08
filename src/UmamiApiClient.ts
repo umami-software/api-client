@@ -10,6 +10,7 @@ import {
 } from 'next-basics';
 import * as Umami from 'types';
 import debug from 'debug';
+import { SearchResult } from 'types';
 
 export const log = debug('umami:api-client');
 
@@ -112,7 +113,7 @@ export class UmamiApiClient {
 
   async getUsers(
     params: Umami.UserSearchParams,
-  ): Promise<ApiResponse<Umami.ParamsResult<Umami.User[]>>> {
+  ): Promise<ApiResponse<Umami.SearchResult<Umami.User[]>>> {
     return this.get(`users`, params);
   }
 
@@ -129,7 +130,7 @@ export class UmamiApiClient {
   async getUserWebsites(
     userId: string,
     params: Umami.WebsiteSearchParams,
-  ): Promise<ApiResponse<Umami.ParamsResult<Umami.User[]>>> {
+  ): Promise<ApiResponse<Umami.SearchResult<Umami.User[]>>> {
     return this.get(`users/${userId}/websites`, params);
   }
 
@@ -144,7 +145,7 @@ export class UmamiApiClient {
     return this.post(`users/${userId}`, data);
   }
 
-  async getShare(shareId: string): Promise<ApiResponse<Umami.Share[]>> {
+  async getShare(shareId: string): Promise<ApiResponse<Umami.Share>> {
     return this.get(`share/${shareId}`);
   }
 
@@ -169,7 +170,9 @@ export class UmamiApiClient {
     return this.del(`reports/${reportId}`);
   }
 
-  async getReports(params?: Umami.SearchParams): Promise<ApiResponse<Umami.Report[]>> {
+  async getReports(
+    params?: Umami.SearchParams,
+  ): Promise<ApiResponse<SearchResult<Umami.Report[]>>> {
     return this.get(`reports`, params);
   }
 
@@ -214,11 +217,11 @@ export class UmamiApiClient {
 
   async getWebsites(
     params?: Umami.WebsiteSearchParams,
-  ): Promise<ApiResponse<Umami.ParamsResult<Umami.Website[]>>> {
+  ): Promise<ApiResponse<Umami.SearchResult<Umami.Website[]>>> {
     return this.get(`websites`, params);
   }
 
-  async getWebsiteActive(websiteId: string): Promise<ApiResponse<Umami.WebsiteActive[]>> {
+  async getWebsiteActive(websiteId: string): Promise<ApiResponse<Umami.WebsiteActive>> {
     return this.get(`websites/${websiteId}/active`);
   }
 
@@ -240,7 +243,7 @@ export class UmamiApiClient {
         },
       ];
     },
-  ): Promise<ApiResponse<Umami.WebsiteMetric[]>> {
+  ): Promise<ApiResponse<SearchResult<Umami.WebsiteMetric[]>>> {
     return this.post(`websites/${websiteId}/eventdata`, params);
   }
 
@@ -254,7 +257,7 @@ export class UmamiApiClient {
       url?: string;
       eventName?: string;
     },
-  ): Promise<ApiResponse<Umami.WebsiteMetric[]>> {
+  ): Promise<ApiResponse<SearchResult<Umami.WebsiteMetric[]>>> {
     return this.get(`websites/${websiteId}/events`, params);
   }
 
@@ -276,7 +279,7 @@ export class UmamiApiClient {
       region?: string;
       city?: string;
     },
-  ): Promise<ApiResponse<Umami.WebsiteMetric[]>> {
+  ): Promise<ApiResponse<SearchResult<Umami.WebsiteMetric[]>>> {
     return this.get(`websites/${websiteId}/metrics`, params);
   }
 
@@ -330,7 +333,9 @@ export class UmamiApiClient {
     return this.get(`teams/${teamId}`);
   }
 
-  async getTeams(params?: Umami.TeamSearchParams): Promise<ApiResponse<Umami.Team[]>> {
+  async getTeams(
+    params?: Umami.TeamSearchParams,
+  ): Promise<ApiResponse<SearchResult<Umami.Team[]>>> {
     return this.get(`teams`, params);
   }
 
@@ -341,11 +346,11 @@ export class UmamiApiClient {
   async getTeamUsers(
     teamId: string,
     params?: Umami.UserSearchParams,
-  ): Promise<ApiResponse<Umami.User[]>> {
+  ): Promise<ApiResponse<SearchResult<Umami.User[]>>> {
     return this.get(`teams/${teamId}/users`, params);
   }
 
-  async getTeamUser(teamId: string, userId: string): Promise<ApiResponse<Umami.User[]>> {
+  async getTeamUser(teamId: string, userId: string): Promise<ApiResponse<Umami.User>> {
     return this.get(`teams/${teamId}/users/${userId}`);
   }
 
@@ -371,7 +376,7 @@ export class UmamiApiClient {
   async getTeamWebsites(
     teamId: string,
     params?: Umami.WebsiteSearchParams,
-  ): Promise<ApiResponse<Umami.ParamsResult<Umami.ParamsResult<Umami.Website[]>>>> {
+  ): Promise<ApiResponse<Umami.SearchResult<Umami.SearchResult<Umami.Website[]>>>> {
     return this.get(`teams/${teamId}/websites`, params);
   }
 
