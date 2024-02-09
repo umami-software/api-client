@@ -505,7 +505,7 @@ export class UmamiApiClient {
 
   async send(data: {
     type: 'event';
-    payload: {
+    payloadf: {
       data: { [key: string]: any };
       hostname: string;
       language: string;
@@ -691,8 +691,15 @@ export class UmamiApiClient {
           this.createTeamWebsite(id, data),
       },
       {
-        path: /^users$/,
+        path: /^admin\/users$/,
         get: async ([]: any, data: Umami.UserSearchParams) => this.getUsers(data),
+      },
+      {
+        path: /^admin\/websites$/,
+        get: async ([]: any, data: Umami.UserSearchParams) => this.getWebsites(data),
+      },
+      {
+        path: /^users$/,
         post: async ([]: any, data: { username: string; password: string }) =>
           this.createUser(data),
       },
