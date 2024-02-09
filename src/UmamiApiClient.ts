@@ -505,7 +505,7 @@ export class UmamiApiClient {
 
   async send(data: {
     type: 'event';
-    payloadf: {
+    payload: {
       data: { [key: string]: any };
       hostname: string;
       language: string;
