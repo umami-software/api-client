@@ -129,7 +129,7 @@ export class UmamiApiClient {
 
   async getUserWebsites(
     userId: string,
-    params: Umami.WebsiteSearchParams,
+    params?: Umami.WebsiteSearchParams,
   ): Promise<ApiResponse<Umami.SearchResult<Umami.User[]>>> {
     return this.get(`users/${userId}/websites`, params);
   }
@@ -471,7 +471,17 @@ export class UmamiApiClient {
     return this.get(`event-data/stats`, { websiteId, ...params });
   }
 
-  async showFunnelReport(data: {
+  async transferWebsite(
+    websiteId: string,
+    params: {
+      userId?: string;
+      teamId?: string;
+    },
+  ) {
+    return this.post(`websites/${websiteId}/transfer`, { websiteId, ...params });
+  }
+
+  async runFunnelReport(data: {
     websiteId: string;
     urls: string[];
     window: number;
@@ -483,7 +493,7 @@ export class UmamiApiClient {
     return this.post(`reports/funnel`, data);
   }
 
-  async showInsightsReport(data: {
+  async runInsightsReport(data: {
     websiteId: string;
     dateRange: {
       startDate: string;
@@ -496,11 +506,11 @@ export class UmamiApiClient {
     return this.post(`reports/insights`, data);
   }
 
-  async showRetentionReport(data: {
+  async runRetentionReport(data: {
     websiteId: string;
     dateRange: { startDate: string; endDate: string; timezone: string };
   }) {
-    return this.post(`reports/rentention`, data);
+    return this.post(`reports/retention`, data);
   }
 
   async send(data: {
@@ -625,7 +635,7 @@ export class UmamiApiClient {
               endDate: string;
             };
           },
-        ) => this.showFunnelReport(data),
+        ) => this.runFunnelReport(data),
       },
       {
         path: /^reports\/insight$/,
@@ -641,7 +651,7 @@ export class UmamiApiClient {
             filters: { name: string; type: string; filter: string; value: string }[];
             groups: { name: string; type: string }[];
           },
-        ) => this.showInsightsReport(data),
+        ) => this.runInsightsReport(data),
       },
       {
         path: /^reports\/retention$/,
@@ -651,7 +661,7 @@ export class UmamiApiClient {
             websiteId: string;
             dateRange: { startDate: string; endDate: string; timezone: string };
           },
-        ) => this.showRetentionReport(data),
+        ) => this.runRetentionReport(data),
       },
       {
         path: /^teams$/,
@@ -816,6 +826,16 @@ export class UmamiApiClient {
             city?: string | undefined;
           },
         ) => this.getWebsiteStats(id, data),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+\/transer$/,
+        post: (
+          [, id]: any,
+          data: {
+            userId?: string;
+            teamId?: string;
+          },
+        ) => this.transferWebsite(id, data),
       },
     ];
 
