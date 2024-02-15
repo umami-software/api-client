@@ -828,7 +828,7 @@ export class UmamiApiClient {
         ) => this.getWebsiteStats(id, data),
       },
       {
-        path: /^websites\/[0-9a-f-]+\/transer$/,
+        path: /^websites\/[0-9a-f-]+\/transfer$/,
         post: (
           [, id]: any,
           data: {
