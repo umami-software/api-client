@@ -127,10 +127,17 @@ export class UmamiApiClient {
     return this.get(`users/${userId}/usage`, params);
   }
 
+  async getUserTeams(
+    userId: string,
+    params?: Umami.TeamSearchParams,
+  ): Promise<ApiResponse<Umami.SearchResult<Umami.Team[]>>> {
+    return this.get(`users/${userId}/teams`, params);
+  }
+
   async getUserWebsites(
     userId: string,
     params?: Umami.WebsiteSearchParams,
-  ): Promise<ApiResponse<Umami.SearchResult<Umami.User[]>>> {
+  ): Promise<ApiResponse<Umami.SearchResult<Umami.Website[]>>> {
     return this.get(`users/${userId}/websites`, params);
   }
 
@@ -719,6 +726,10 @@ export class UmamiApiClient {
         post: async ([, id]: any, data: { username: string; password: string }) =>
           this.updateUser(id, data),
         delete: async ([, id]: any) => this.deleteUser(id),
+      },
+      {
+        path: /^users\/[0-9a-f-]+\/teams$/,
+        get: async ([, id]: any, data: Umami.WebsiteSearchParams) => this.getUserTeams(id, data),
       },
       {
         path: /^users\/[0-9a-f-]+\/websites$/,
