@@ -316,7 +316,7 @@ export class UmamiApiClient {
     params: {
       startAt: number;
       endAt: number;
-      url: string;
+      url?: string;
       referrer?: string;
       title?: string;
       query?: string;
@@ -824,7 +824,7 @@ export class UmamiApiClient {
           data: {
             startAt: number;
             endAt: number;
-            url: string;
+            url?: string;
             referrer?: string | undefined;
             title?: string | undefined;
             query?: string | undefined;
