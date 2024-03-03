@@ -232,6 +232,17 @@ export class UmamiApiClient {
     return this.get(`websites/${websiteId}/active`);
   }
 
+  async getWebsiteReports(websiteId: string): Promise<ApiResponse<Umami.Report[]>> {
+    return this.get(`websites/${websiteId}/reports`);
+  }
+
+  async getWebsiteValues(
+    websiteId: string,
+    params: { startAt: number; endAt: number },
+  ): Promise<ApiResponse<any>> {
+    return this.get(`websites/${websiteId}/values`, params);
+  }
+
   async getWebsiteEventData(
     websiteId: string,
     params: {
@@ -402,8 +413,7 @@ export class UmamiApiClient {
     teamId: string,
     data: {
       name: string;
-      domain: string;
-      shareId: string;
+      accessCode: string;
     },
   ): Promise<ApiResponse<Umami.Empty>> {
     return this.post(`teams/${teamId}`, data);
@@ -550,6 +560,14 @@ export class UmamiApiClient {
   async executeRoute(url: string, method: string, data: any): Promise<ApiResponse<any>> {
     const routes = [
       {
+        path: /^admin\/users$/,
+        get: async ([]: any, data: Umami.UserSearchParams) => this.getUsers(data),
+      },
+      {
+        path: /^admin\/websites$/,
+        get: async ([]: any, data: Umami.UserSearchParams) => this.getWebsites(data),
+      },
+      {
         path: /^event-data\/events$/,
         get: async (
           [, id]: any,
@@ -682,7 +700,7 @@ export class UmamiApiClient {
       {
         path: /^teams\/[0-9a-f-]+$/,
         get: async ([, id]: any) => this.getTeam(id),
-        post: async ([, id]: any, data: { name: string; domain: string; shareId: string }) =>
+        post: async ([, id]: any, data: { name: string; accessCode: string }) =>
           this.updateTeam(id, data),
         delete: async ([, id]: any) => this.deleteTeam(id),
       },
@@ -708,15 +726,8 @@ export class UmamiApiClient {
           this.createTeamWebsite(id, data),
       },
       {
-        path: /^admin\/users$/,
-        get: async ([]: any, data: Umami.UserSearchParams) => this.getUsers(data),
-      },
-      {
-        path: /^admin\/websites$/,
-        get: async ([]: any, data: Umami.UserSearchParams) => this.getWebsites(data),
-      },
-      {
         path: /^users$/,
+        get: async ([]: any, data: Umami.UserSearchParams) => this.getUsers(data),
         post: async ([]: any, data: { username: string; password: string }) =>
           this.createUser(data),
       },
@@ -743,7 +754,10 @@ export class UmamiApiClient {
       {
         path: /^websites$/,
         get: async ([]: any, data: Umami.WebsiteSearchParams | undefined) => this.getWebsites(data),
-        post: async ([]: any, data: { name: string; domain: string }) => this.createWebsite(data),
+        post: async (
+          []: any,
+          data: { name: string; domain: string; shareId: string; teamId: string },
+        ) => this.createWebsite(data),
       },
       {
         path: /^websites\/[0-9a-f-]+$/,
@@ -754,6 +768,10 @@ export class UmamiApiClient {
       },
       {
         path: /^websites\/[0-9a-f-]+\/active$/,
+        get: async ([, id]: any) => this.getWebsiteActive(id),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+\/daterange$/,
         get: async ([, id]: any) => this.getWebsiteActive(id),
       },
       {
@@ -789,6 +807,8 @@ export class UmamiApiClient {
             country?: string | undefined;
             region?: string | undefined;
             city?: string | undefined;
+            language?: string | undefined;
+            limit?: number | undefined;
           },
         ) => this.getWebsiteMetrics(id, data),
       },
@@ -812,6 +832,10 @@ export class UmamiApiClient {
             city?: string | undefined;
           },
         ) => this.getWebsitePageviews(id, data),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+\/reports$/,
+        post: ([, id]: any) => this.getWebsiteReports(id),
       },
       {
         path: /^websites\/[0-9a-f-]+\/reset$/,
@@ -847,6 +871,16 @@ export class UmamiApiClient {
             teamId?: string;
           },
         ) => this.transferWebsite(id, data),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+\/values$/,
+        pogetst: (
+          [, id]: any,
+          data: {
+            startAt?: number;
+            endAt?: number;
+          },
+        ) => this.getWebsiteValues(id, data),
       },
     ];
 
