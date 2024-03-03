@@ -877,8 +877,8 @@ export class UmamiApiClient {
         pogetst: (
           [, id]: any,
           data: {
-            startAt?: number;
-            endAt?: number;
+            startAt: number;
+            endAt: number;
           },
         ) => this.getWebsiteValues(id, data),
       },
