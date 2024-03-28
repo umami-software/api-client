@@ -74,7 +74,8 @@ export interface WebsitePageviews {
 
 export interface WebsiteStats {
   pageviews: { value: number; change: number };
-  uniques: { value: number; change: number };
+  visitors: { value: number; change: number };
+  visits: { value: number; change: number };
   bounces: { value: number; change: number };
   totalTime: { value: number; change: number };
 }
