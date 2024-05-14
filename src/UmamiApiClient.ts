@@ -141,6 +141,10 @@ export class UmamiApiClient {
     return this.get(`users/${userId}/websites`, params);
   }
 
+  async getAllUserWebsitesIncludingTeamOwner(userId: string) {
+    return this.get(`users/${userId}/websitesTeam`);
+  }
+
   async deleteUser(userId: string): Promise<ApiResponse<Umami.Empty>> {
     return this.del(`users/${userId}`);
   }
@@ -745,6 +749,10 @@ export class UmamiApiClient {
       {
         path: /^users\/[0-9a-f-]+\/websites$/,
         get: async ([, id]: any, data: Umami.WebsiteSearchParams) => this.getUserWebsites(id, data),
+      },
+      {
+        path: /^users\/[0-9a-f-]+\/websitesTeam$/,
+        get: async ([, id]: any) => this.getAllUserWebsitesIncludingTeamOwner(id),
       },
       {
         path: /^users\/[0-9a-f-]+\/usage$/,
