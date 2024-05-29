@@ -300,6 +300,7 @@ export class UmamiApiClient {
       country?: string;
       region?: string;
       city?: string;
+      limit?: number;
     },
   ): Promise<ApiResponse<SearchResult<Umami.WebsiteMetric[]>>> {
     return this.get(`websites/${websiteId}/metrics`, params);
