@@ -73,11 +73,11 @@ export interface WebsitePageviews {
 }
 
 export interface WebsiteStats {
-  pageviews: { value: number; change: number };
-  visitors: { value: number; change: number };
-  visits: { value: number; change: number };
-  bounces: { value: number; change: number };
-  totalTime: { value: number; change: number };
+  pageviews: { value: number; prev: number };
+  visitors: { value: number; prev: number };
+  visits: { value: number; prev: number };
+  bounces: { value: number; prev: number };
+  totalTime: { value: number; prev: number };
 }
 
 export interface RealtimeInit {
