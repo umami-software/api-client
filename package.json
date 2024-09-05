@@ -1,6 +1,6 @@
 {
   "name": "@umami/api-client",
-  "version": "0.69.0",
+  "version": "0.70.0",
   "description": "API client for Umami Analytics",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -21,6 +21,7 @@
     "dev": "rollup -c -w"
   },
   "dependencies": {
+    "@umami/api-client": "file:",
     "cross-fetch": "^3.1.5",
     "debug": "^4.3.4",
     "next-basics": "^0.36.0",

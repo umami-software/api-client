@@ -270,13 +270,32 @@ export class UmamiApiClient {
     params: {
       startAt: string;
       endAt: string;
+      query?: string;
+    },
+  ): Promise<ApiResponse<any>> {
+    return this.get(`websites/${websiteId}/events`, params);
+  }
+
+  async getEventMetrics(
+    websiteId: string,
+    params: {
+      startAt: string;
+      endAt: string;
       unit: string;
       timezone: string;
       url?: string;
-      eventName?: string;
+      referrer?: string;
+      title?: string;
+      host?: string;
+      os?: string;
+      browser?: string;
+      device?: string;
+      country?: string;
+      region?: string;
+      city?: string;
     },
-  ): Promise<ApiResponse<SearchResult<Umami.WebsiteMetric[]>>> {
-    return this.get(`websites/${websiteId}/events`, params);
+  ): Promise<ApiResponse<SearchResult<Umami.WebsiteEventMetric[]>>> {
+    return this.get(`websites/${websiteId}/events/series`, params);
   }
 
   async getWebsiteMetrics(
@@ -782,12 +801,32 @@ export class UmamiApiClient {
           data: {
             startAt: string;
             endAt: string;
-            unit: string;
-            timezone: string;
             url?: string | undefined;
             eventName?: string | undefined;
           },
         ) => this.getWebsiteEvents(id, data),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+\/events\/series$/,
+        get: async (
+          [, id]: any,
+          data: {
+            startAt: string;
+            endAt: string;
+            unit: string;
+            timezone: string;
+            url?: string | undefined;
+            referrer?: string | undefined;
+            title?: string | undefined;
+            host?: string | undefined;
+            os?: string | undefined;
+            browser?: string | undefined;
+            device?: string | undefined;
+            country?: string | undefined;
+            region?: string | undefined;
+            city?: string | undefined;
+          },
+        ) => this.getEventMetrics(id, data),
       },
       {
         path: /^websites\/[0-9a-f-]+\/metrics$/,
