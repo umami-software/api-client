@@ -272,8 +272,18 @@ export class UmamiApiClient {
       endAt: string;
       query?: string;
     },
-  ): Promise<ApiResponse<any>> {
+  ): Promise<ApiResponse<SearchResult<any>>> {
     return this.get(`websites/${websiteId}/events`, params);
+  }
+
+  async getWebsiteSessions(
+    websiteId: string,
+    params: {
+      startAt: string;
+      endAt: string;
+    },
+  ): Promise<ApiResponse<SearchResult<any>>> {
+    return this.get(`websites/${websiteId}/sessions`, params);
   }
 
   async getEventMetrics(
@@ -294,7 +304,7 @@ export class UmamiApiClient {
       region?: string;
       city?: string;
     },
-  ): Promise<ApiResponse<SearchResult<Umami.WebsiteEventMetric[]>>> {
+  ): Promise<ApiResponse<Umami.WebsiteEventMetric[]>> {
     return this.get(`websites/${websiteId}/events/series`, params);
   }
 
@@ -805,6 +815,16 @@ export class UmamiApiClient {
             eventName?: string | undefined;
           },
         ) => this.getWebsiteEvents(id, data),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+\/sessions$/,
+        get: async (
+          [, id]: any,
+          data: {
+            startAt: string;
+            endAt: string;
+          },
+        ) => this.getWebsiteSessions(id, data),
       },
       {
         path: /^websites\/[0-9a-f-]+\/events\/series$/,
