@@ -243,28 +243,6 @@ export class UmamiApiClient {
     return this.get(`websites/${websiteId}/values`, params);
   }
 
-  async getWebsiteEventData(
-    websiteId: string,
-    params: {
-      startAt: string;
-      endAt: string;
-      eventName?: string;
-      urlPath?: string;
-      timeSeries?: {
-        unit: string;
-        timezone: string;
-      };
-      filters: [
-        {
-          eventKey?: string;
-          eventValue?: string | number | boolean | Date;
-        },
-      ];
-    },
-  ): Promise<ApiResponse<SearchResult<Umami.WebsiteMetric[]>>> {
-    return this.post(`websites/${websiteId}/eventdata`, params);
-  }
-
   async getWebsiteEvents(
     websiteId: string,
     params: {
@@ -272,7 +250,7 @@ export class UmamiApiClient {
       endAt: string;
       query?: string;
     },
-  ): Promise<ApiResponse<SearchResult<any>>> {
+  ): Promise<ApiResponse<SearchResult<Umami.WebsiteEvent[]>>> {
     return this.get(`websites/${websiteId}/events`, params);
   }
 
@@ -282,8 +260,55 @@ export class UmamiApiClient {
       startAt: string;
       endAt: string;
     },
-  ): Promise<ApiResponse<SearchResult<any>>> {
+  ): Promise<ApiResponse<SearchResult<Umami.WebsiteSession[]>>> {
     return this.get(`websites/${websiteId}/sessions`, params);
+  }
+
+  async getWebsiteSessionStats(
+    websiteId: string,
+    params: {
+      startAt: string;
+      endAt: string;
+      url?: string;
+      referrer?: string;
+      title?: string;
+      query?: string;
+      event?: string;
+      host?: string;
+      os?: string;
+      browser?: string;
+      device?: string;
+      country?: string;
+      region?: string;
+      city?: string;
+    },
+  ): Promise<ApiResponse<Umami.WebsiteSessionStats>> {
+    return this.get(`websites/${websiteId}/sessions/stats`, params);
+  }
+
+  async getWebsiteSession(
+    websiteId: string,
+    sessionId: string,
+  ): Promise<ApiResponse<SearchResult<Umami.WebsiteSession>>> {
+    return this.get(`websites/${websiteId}/sessions/${sessionId}`);
+  }
+
+  async getSessionActivity(
+    websiteId: string,
+    sessionId: string,
+    params: {
+      startAt: string;
+      endAt: string;
+    },
+  ): Promise<ApiResponse<SearchResult<Umami.SessionActivity[]>>> {
+    return this.get(`websites/${websiteId}/sessions/${sessionId}/activity`, params);
+  }
+
+  async getSessionData(
+    websiteId: string,
+    sessionId: string,
+  ): Promise<ApiResponse<SearchResult<Umami.SessionData[]>>> {
+    return this.get(`websites/${websiteId}/sessions/${sessionId}/properties`);
   }
 
   async getEventMetrics(
@@ -493,19 +518,8 @@ export class UmamiApiClient {
       endAt: number;
       event?: string;
     },
-  ): Promise<ApiResponse<Umami.WebsiteEventData>> {
-    return this.get(`event-data/events`, { websiteId, ...params });
-  }
-
-  async getEventDataFields(
-    websiteId: string,
-    params: {
-      startAt: number;
-      endAt: number;
-      field?: string;
-    },
-  ): Promise<ApiResponse<Umami.WebsiteEventData>> {
-    return this.get(`event-data/fields`, { websiteId, ...params });
+  ): Promise<ApiResponse<Umami.WebsiteEventData[]>> {
+    return this.get(`websites/${websiteId}/event-data/events`, { websiteId, ...params });
   }
 
   async getEventDataStats(
@@ -514,8 +528,42 @@ export class UmamiApiClient {
       startAt: number;
       endAt: number;
     },
-  ) {
-    return this.get(`event-data/stats`, { websiteId, ...params });
+  ): Promise<ApiResponse<Umami.WebsiteEventDataStats>> {
+    return this.get(`websites/${websiteId}/event-data/stats`, { websiteId, ...params });
+  }
+
+  async getEventDataValues(
+    websiteId: string,
+    params: {
+      startAt: number;
+      endAt: number;
+      eventName: string;
+      propertyName: string;
+    },
+  ): Promise<ApiResponse<Umami.WebsiteDataValue[]>> {
+    return this.get(`websites/${websiteId}/event-data/values`, { websiteId, ...params });
+  }
+
+  async getSessionDataProperties(
+    websiteId: string,
+    params: {
+      startAt: number;
+      endAt: number;
+    },
+  ): Promise<ApiResponse<Umami.WebsiteSessionData[]>> {
+    return this.get(`websites/${websiteId}/session-data/properties`, { websiteId, ...params });
+  }
+
+  async getSessionDataValues(
+    websiteId: string,
+    params: {
+      startAt: number;
+      endAt: number;
+      eventName: string;
+      propertyName: string;
+    },
+  ): Promise<ApiResponse<Umami.WebsiteDataValue[]>> {
+    return this.get(`websites/${websiteId}/session-data/values`, { websiteId, ...params });
   }
 
   async transferWebsite(
@@ -596,29 +644,6 @@ export class UmamiApiClient {
       {
         path: /^admin\/websites$/,
         get: async ([]: any, data: Umami.UserSearchParams) => this.getWebsites(data),
-      },
-      {
-        path: /^event-data\/events$/,
-        get: async (
-          [, id]: any,
-          data: {
-            startAt: number;
-            endAt: number;
-            event?: string;
-          },
-        ) => this.getEventDataEvents(id, data),
-      },
-      {
-        path: /^event-data\/fields$/,
-        get: async (
-          [, id]: any,
-          data: { startAt: number; endAt: number; field?: string | undefined },
-        ) => this.getEventDataFields(id, data),
-      },
-      {
-        path: /^event-data\/stats$/,
-        get: async ([, id]: any, data: { startAt: number; endAt: number }) =>
-          this.getEventDataStats(id, data),
       },
       {
         path: /^me$/,
@@ -805,26 +830,43 @@ export class UmamiApiClient {
         get: async ([, id]: any) => this.getWebsiteActive(id),
       },
       {
+        path: /^websites\/[0-9a-f-]+\/event-data\/events$/,
+        get: async (
+          [, id]: any,
+          data: {
+            startAt: number;
+            endAt: number;
+            event?: string;
+          },
+        ) => this.getEventDataEvents(id, data),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+\/event-data\/stats$/,
+        get: async (
+          [, id]: any,
+          data: {
+            startAt: number;
+            endAt: number;
+          },
+        ) => this.getEventDataStats(id, data),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+\/event-data\/values$/,
+        get: async (
+          [, id]: any,
+          data: { startAt: number; endAt: number; eventName: string; propertyName: string },
+        ) => this.getEventDataValues(id, data),
+      },
+      {
         path: /^websites\/[0-9a-f-]+\/events$/,
         get: async (
           [, id]: any,
           data: {
             startAt: string;
             endAt: string;
-            url?: string | undefined;
-            eventName?: string | undefined;
+            query?: string;
           },
         ) => this.getWebsiteEvents(id, data),
-      },
-      {
-        path: /^websites\/[0-9a-f-]+\/sessions$/,
-        get: async (
-          [, id]: any,
-          data: {
-            startAt: string;
-            endAt: string;
-          },
-        ) => this.getWebsiteSessions(id, data),
       },
       {
         path: /^websites\/[0-9a-f-]+\/events\/series$/,
@@ -900,6 +942,55 @@ export class UmamiApiClient {
       {
         path: /^websites\/[0-9a-f-]+\/reset$/,
         post: ([, id]: any) => this.resetWebsite(id),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+\/session-data\/properties$/,
+        get: async (
+          [, id]: any,
+          data: {
+            startAt: number;
+            endAt: number;
+          },
+        ) => this.getSessionDataProperties(id, data),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+\/session-data\/values$/,
+        get: async (
+          [, id]: any,
+          data: { startAt: number; endAt: number; eventName: string; propertyName: string },
+        ) => this.getSessionDataValues(id, data),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+\/sessions$/,
+        get: async (
+          [, id]: any,
+          data: {
+            startAt: string;
+            endAt: string;
+          },
+        ) => this.getWebsiteSessions(id, data),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+\/sessions\/stats$/,
+        get: async (
+          [, id]: any,
+          data: {
+            startAt: string;
+            endAt: string;
+            url?: string;
+            referrer?: string;
+            title?: string;
+            query?: string;
+            event?: string;
+            host?: string;
+            os?: string;
+            browser?: string;
+            device?: string;
+            country?: string;
+            region?: string;
+            city?: string;
+          },
+        ) => this.getWebsiteSessionStats(id, data),
       },
       {
         path: /^websites\/[0-9a-f-]+\/stats$/,

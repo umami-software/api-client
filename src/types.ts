@@ -80,6 +80,14 @@ export interface WebsiteStats {
   totalTime: { value: number; prev: number };
 }
 
+export interface WebsiteSessionStats {
+  countries: { value: number };
+  events: { value: number };
+  pageviews: { value: number };
+  visitors: { value: number };
+  visits: { value: number };
+}
+
 export interface RealtimeInit {
   websites: Website[];
   token: string;
@@ -93,11 +101,85 @@ export interface RealtimeUpdate {
   timestamp: number;
 }
 
+export interface SessionActivity {
+  createdAt: Date;
+  urlPath: string;
+  urlQuery: string;
+  referrerDomain: string;
+  eventId: string;
+  eventType: number;
+  eventName: string;
+  visitId: string;
+}
+
+export interface SessionData {
+  websiteId: string;
+  sessionId: string;
+  dataKey: string;
+  dataType: string;
+  stringValue: string;
+  numberValue: number;
+  dateValue: Date;
+  createdAt: Date;
+}
+
+export interface WebsiteEvent {
+  id: string;
+  websiteId: string;
+  sessionId: string;
+  createdAt: Date;
+  urlPath: string;
+  urlQuery: string;
+  referrerPath: string;
+  referrerQuery: string;
+  referrerDomain: string;
+  pageTitle: string;
+  eventType: number;
+  eventName: string;
+}
+
+export interface WebsiteSession {
+  id: string;
+  websiteId: string;
+  hostname: string;
+  browser: string;
+  os: string;
+  device: string;
+  screen: string;
+  language: string;
+  country: string;
+  subdivision1: string;
+  city: string;
+  firstAt: Date;
+  lastAt: Date;
+  visits: number;
+  views: number;
+  events?: number;
+  toataltime?: number;
+  createdAt: Date;
+}
+
 export interface WebsiteEventData {
-  eventName?: string;
-  fieldName: string;
+  eventName: string;
+  propertyName: string;
   dataType: number;
-  fieldValue?: string;
+  propertyValue?: string;
+  total: number;
+}
+
+export interface WebsiteEventDataStats {
+  events: number;
+  properties: number;
+  records: number;
+}
+
+export interface WebsiteSessionData {
+  propertyName: string;
+  total: number;
+}
+
+export interface WebsiteDataValue {
+  value: string;
   total: number;
 }
 
