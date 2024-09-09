@@ -993,6 +993,25 @@ export class UmamiApiClient {
         ) => this.getWebsiteSessionStats(id, data),
       },
       {
+        path: /^websites\/[0-9a-f-]+\/sessions\/[0-9a-f-]+$/,
+        get: async ([, websiteId, , sessionId]: any) =>
+          this.getWebsiteSession(websiteId, sessionId),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+\/sessions\/[0-9a-f-]+\/activity$/,
+        get: async (
+          [, websiteId, , sessionId]: any,
+          data: {
+            startAt: string;
+            endAt: string;
+          },
+        ) => this.getSessionActivity(websiteId, sessionId, data),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+\/sessions\/[0-9a-f-]+\/properties$/,
+        get: async ([, websiteId, , sessionId]: any) => this.getSessionData(websiteId, sessionId),
+      },
+      {
         path: /^websites\/[0-9a-f-]+\/stats$/,
         get: async (
           [, id]: any,
