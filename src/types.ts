@@ -178,6 +178,13 @@ export interface WebsiteSessionData {
   total: number;
 }
 
+export interface WebsiteDataField {
+  propertyName: string;
+  dataType: number;
+  value: string;
+  total: number;
+}
+
 export interface WebsiteDataValue {
   value: string;
   total: number;
