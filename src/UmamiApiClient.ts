@@ -544,6 +544,16 @@ export class UmamiApiClient {
     return this.get(`websites/${websiteId}/event-data/values`, { websiteId, ...params });
   }
 
+  async getEventDataFields(
+    websiteId: string,
+    params: {
+      startAt: number;
+      endAt: number;
+    },
+  ): Promise<ApiResponse<Umami.WebsiteDataField[]>> {
+    return this.get(`websites/${websiteId}/event-data/fields`, { websiteId, ...params });
+  }
+
   async getSessionDataProperties(
     websiteId: string,
     params: {
@@ -856,6 +866,11 @@ export class UmamiApiClient {
           [, id]: any,
           data: { startAt: number; endAt: number; eventName: string; propertyName: string },
         ) => this.getEventDataValues(id, data),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+\/event-data\/fields$/,
+        get: async ([, id]: any, data: { startAt: number; endAt: number }) =>
+          this.getEventDataFields(id, data),
       },
       {
         path: /^websites\/[0-9a-f-]+\/events$/,
