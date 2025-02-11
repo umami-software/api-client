@@ -77,7 +77,7 @@ export interface WebsiteStats {
   visitors: { value: number; prev: number };
   visits: { value: number; prev: number };
   bounces: { value: number; prev: number };
-  totalTime: { value: number; prev: number };
+  totaltime: { value: number; prev: number };
 }
 
 export interface WebsiteSessionStats {
@@ -205,7 +205,7 @@ export interface ReportSearchParams extends SearchParams {
 }
 
 export interface SearchParams {
-  query?: string;
+  search?: string;
   page?: number;
   pageSize?: number;
   orderBy?: string;
