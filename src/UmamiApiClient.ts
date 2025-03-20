@@ -618,6 +618,34 @@ export class UmamiApiClient {
     return this.post(`reports/retention`, data);
   }
 
+  async runUTMReport(data: {
+    websiteId: string;
+    dateRange: { startDate: string; endDate: string };
+  }) {
+    return this.post(`reports/utm`, data);
+  }
+
+  async runGoalsReport(data: {
+    websiteId: string;
+    dateRange: { startDate: string; endDate: string };
+  }) {
+    return this.post(`reports/goals`, data);
+  }
+
+  async runJourneyReport(data: {
+    websiteId: string;
+    dateRange: { startDate: string; endDate: string };
+  }) {
+    return this.post(`reports/journey`, data);
+  }
+
+  async runRevenueReport(data: {
+    websiteId: string;
+    dateRange: { startDate: string; endDate: string };
+  }) {
+    return this.post(`reports/revenue`, data);
+  }
+
   async send(data: {
     type: 'event';
     payload: {
@@ -752,6 +780,46 @@ export class UmamiApiClient {
             dateRange: { startDate: string; endDate: string; timezone: string };
           },
         ) => this.runRetentionReport(data),
+      },
+      {
+        path: /^reports\/revenue$/,
+        post: async (
+          [],
+          data: {
+            websiteId: string;
+            dateRange: { startDate: string; endDate: string };
+          },
+        ) => this.runRevenueReport(data),
+      },
+      {
+        path: /^reports\/utm$/,
+        post: async (
+          [],
+          data: {
+            websiteId: string;
+            dateRange: { startDate: string; endDate: string };
+          },
+        ) => this.runUTMReport(data),
+      },
+      {
+        path: /^reports\/goals$/,
+        post: async (
+          [],
+          data: {
+            websiteId: string;
+            dateRange: { startDate: string; endDate: string };
+          },
+        ) => this.runGoalsReport(data),
+      },
+      {
+        path: /^reports\/journey$/,
+        post: async (
+          [],
+          data: {
+            websiteId: string;
+            dateRange: { startDate: string; endDate: string };
+          },
+        ) => this.runJourneyReport(data),
       },
       {
         path: /^teams$/,
