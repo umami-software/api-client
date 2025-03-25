@@ -351,6 +351,7 @@ export class UmamiApiClient {
       region?: string;
       city?: string;
       limit?: number;
+      tag?: string;
     },
   ): Promise<ApiResponse<SearchResult<Umami.WebsiteMetric[]>>> {
     return this.get(`websites/${websiteId}/metrics`, params);
@@ -372,6 +373,7 @@ export class UmamiApiClient {
       country?: string;
       region?: string;
       city?: string;
+      tag?: string;
     },
   ): Promise<ApiResponse<Umami.WebsitePageviews>> {
     return this.get(`websites/${websiteId}/pageviews`, params);
@@ -393,6 +395,7 @@ export class UmamiApiClient {
       country?: string;
       region?: string;
       city?: string;
+      tag?: string;
     },
   ): Promise<ApiResponse<Umami.WebsiteStats>> {
     return this.get(`websites/${websiteId}/stats`, params);
@@ -994,6 +997,7 @@ export class UmamiApiClient {
             city?: string | undefined;
             language?: string | undefined;
             limit?: number | undefined;
+            tag?: string | undefined;
           },
         ) => this.getWebsiteMetrics(id, data),
       },
@@ -1015,6 +1019,7 @@ export class UmamiApiClient {
             country?: string | undefined;
             region?: string | undefined;
             city?: string | undefined;
+            tag?: string | undefined;
           },
         ) => this.getWebsitePageviews(id, data),
       },
@@ -1112,6 +1117,7 @@ export class UmamiApiClient {
             country?: string | undefined;
             region?: string | undefined;
             city?: string | undefined;
+            tag?: string | undefined;
           },
         ) => this.getWebsiteStats(id, data),
       },
