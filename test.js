@@ -51,6 +51,7 @@ describe('Testing all get functions', () => {
       endAt: END_AT,
       url: '/',
       timezone: 'America/Los_Angeles',
+      unit: 'day',
     });
 
     return results.ok;
