@@ -65,11 +65,11 @@ export interface WebsitePageviews {
   pageviews: {
     t: string;
     y: number;
-  };
+  }[];
   sessions: {
     t: string;
     y: number;
-  };
+  }[];
 }
 
 export interface WebsiteStats {
