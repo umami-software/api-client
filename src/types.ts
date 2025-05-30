@@ -80,6 +80,8 @@ export interface WebsiteStats {
   totaltime: { value: number; prev: number };
 }
 
+export type WebsiteSessionWeekly = number[][];
+
 export interface WebsiteSessionStats {
   countries: { value: number };
   events: { value: number };

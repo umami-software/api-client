@@ -264,6 +264,16 @@ export class UmamiApiClient {
     return this.get(`websites/${websiteId}/sessions`, params);
   }
 
+  async getWebsiteSessionsWeekly(
+    websiteId: string,
+    params: {
+      startAt: string;
+      endAt: string;
+    },
+  ): Promise<ApiResponse<Umami.WebsiteSessionWeekly>> {
+    return this.get(`websites/${websiteId}/sessions/weekly`, params);
+  }
+
   async getWebsiteSessionStats(
     websiteId: string,
     params: {
@@ -649,6 +659,13 @@ export class UmamiApiClient {
     return this.post(`reports/revenue`, data);
   }
 
+  async runAttributionReport(data: {
+    websiteId: string;
+    dateRange: { startDate: string; endDate: string };
+  }) {
+    return this.post(`reports/attribution`, data);
+  }
+
   async send(data: {
     type: 'event';
     payload: {
@@ -713,21 +730,6 @@ export class UmamiApiClient {
         get: async ([, id], data: { startAt: number }) => this.getRealtime(id, data),
       },
       {
-        path: /^reports\/[0-9a-f-]+$/,
-        get: async ([, id]) => this.getReport(id),
-        post: async (
-          [, id],
-          data: {
-            websiteId: string;
-            type: string;
-            name: string;
-            description: string;
-            parameters: string;
-          },
-        ) => this.updateReport(id, data),
-        delete: async ([, id]) => this.deleteReport(id),
-      },
-      {
         path: /^reports$/,
         get: async ([], data: Umami.SearchParams) => this.getReports(data),
         post: async (
@@ -759,7 +761,7 @@ export class UmamiApiClient {
         ) => this.runFunnelReport(data),
       },
       {
-        path: /^reports\/insight$/,
+        path: /^reports\/insights$/,
         post: async (
           [],
           data: {
@@ -823,6 +825,31 @@ export class UmamiApiClient {
             dateRange: { startDate: string; endDate: string };
           },
         ) => this.runJourneyReport(data),
+      },
+      {
+        path: /^reports\/attribution$/,
+        post: async (
+          [],
+          data: {
+            websiteId: string;
+            dateRange: { startDate: string; endDate: string };
+          },
+        ) => this.runAttributionReport(data),
+      },
+      {
+        path: /^reports\/[0-9a-f-]+$/,
+        get: async ([, id]) => this.getReport(id),
+        post: async (
+          [, id],
+          data: {
+            websiteId: string;
+            type: string;
+            name: string;
+            description: string;
+            parameters: string;
+          },
+        ) => this.updateReport(id, data),
+        delete: async ([, id]) => this.deleteReport(id),
       },
       {
         path: /^teams$/,
@@ -1057,6 +1084,16 @@ export class UmamiApiClient {
             endAt: string;
           },
         ) => this.getWebsiteSessions(id, data),
+      },
+      {
+        path: /^websites\/[0-9a-f-]+\/sessions\/weekly$/,
+        get: async (
+          [, id]: any,
+          data: {
+            startAt: string;
+            endAt: string;
+          },
+        ) => this.getWebsiteSessionsWeekly(id, data),
       },
       {
         path: /^websites\/[0-9a-f-]+\/sessions\/stats$/,
