@@ -685,8 +685,23 @@ export class UmamiApiClient {
     return this.post('send', { type, payload });
   }
 
-  async config() {
-    return this.get('config');
+  async batch(
+    data: {
+      type: 'event';
+      payload: {
+        data: { [key: string]: any };
+        hostname: string;
+        language: string;
+        referrer: string;
+        screen: string;
+        title: string;
+        url: string;
+        website: string;
+        name: string;
+      };
+    }[],
+  ) {
+    return this.post('batch', data);
   }
 
   async heartbeat() {
