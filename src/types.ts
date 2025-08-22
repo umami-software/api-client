@@ -63,11 +63,11 @@ export interface WebsiteEventMetric {
 
 export interface WebsitePageviews {
   pageviews: {
-    t: string;
+    x: string;
     y: number;
   }[];
   sessions: {
-    t: string;
+    x: string;
     y: number;
   }[];
 }
