@@ -1,16 +1,16 @@
+import debug from 'debug';
 import {
+  type ApiResponse,
+  buildUrl,
   createSecureToken,
   hash,
+  httpDelete,
   httpGet,
   httpPost,
   httpPut,
-  httpDelete,
-  buildUrl,
-  ApiResponse,
 } from 'next-basics';
-import * as Umami from 'types';
-import debug from 'debug';
-import { SearchResult } from 'types';
+import type * as Umami from 'types';
+import type { SearchResult } from 'types';
 
 export const log = debug('umami:api-client');
 
@@ -1198,7 +1198,7 @@ export class UmamiApiClient {
     const route = routes.find(({ path }) => url.match(path));
     const key = method.toLowerCase();
 
-    if (route && route[key]) {
+    if (route?.[key]) {
       return route[key](url.split('/'), data);
     }
 

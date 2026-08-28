@@ -50,7 +50,6 @@ describe('Testing all get functions', () => {
     const results = await apiClient.client.getWebsitePageviews(process.env.UMAMI_WEBSITE_ID, {
       startAt: START_AT,
       endAt: END_AT,
-      unit: 'hour',
       url: '/',
       timezone: 'America/Los_Angeles',
       unit: 'day',
