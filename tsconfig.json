@@ -1,30 +1,19 @@
 {
   "compilerOptions": {
-    "declaration": true,
-    "esModuleInterop": true,
-    "noImplicitAny": false,
-    "preserveConstEnums": true,
-    "removeComments": true,
-    "sourceMap": true,
-    "allowSyntheticDefaultImports": true,
-    "allowJs": true,
-    "strict": true,
-    "outDir": "./dist",
-    "target": "es5",
+    "target": "es2020",
     "module": "esnext",
     "moduleResolution": "node",
-    "jsx": "react-jsx",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": ["es2020", "dom"],
+    "types": ["node"],
+    "declaration": true,
+    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
-    "baseUrl": ".",
-    "plugins": [
-      {
-        "transform": "typescript-transform-paths",
-        "afterDeclarations": true
-      }
-    ],
-    "paths": { "*": ["./src/*"] }
+    "removeComments": false,
+    "outDir": "./dist"
   },
-  "include": ["./src/**/*"],
-  "exclude": ["node_modules"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }
